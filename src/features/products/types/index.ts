@@ -10,7 +10,6 @@ export interface Product {
   updatedAt: string | null
   createdBy: string
   updatedBy: string | null
-  supplier: Supplier
   category: Category
   
   // Trường tương thích ngược cho component cũ
@@ -22,18 +21,6 @@ export interface Product {
   isBestSeller?: boolean
   isNewArrival?: boolean
 }
-
-export interface Supplier {
-  id: number
-  name: string
-  description: string
-  image: string | null
-  createdAt: string
-  updatedAt: string | null
-  createdBy: string
-  updatedBy: string | null
-}
-
 export interface Category {
   id: number
   name: string

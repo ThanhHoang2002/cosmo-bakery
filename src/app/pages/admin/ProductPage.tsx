@@ -103,14 +103,14 @@ const ProductPage = () => {
       // Hiển thị thông báo lỗi dùng toast
       toast({
         variant: "destructive",
-        title: "Unable to delete product",
+        title: "Không thể xóa sản phẩm",
         description: result.message,
       });
     } else {
       // Xóa thành công, hiển thị thông báo thành công
       toast({
-        title: "Product deleted",
-        description: "The product has been deleted successfully",
+        title: "Sản phẩm đã được xóa thành công",
+        description: "Sản phẩm đã được xóa thành công",
       });
     }
   };
@@ -124,10 +124,10 @@ const ProductPage = () => {
   return (
     <div className="container mx-auto py-10">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Products</h1>
+        <h1 className="text-3xl font-bold">Sản phẩm</h1>
         <Button onClick={handleAddProduct}>
           <Plus className="mr-2 h-4 w-4" />
-          Add Product
+          Thêm sản phẩm
         </Button>
       </div>
 
@@ -138,7 +138,7 @@ const ProductPage = () => {
           className="relative col-span-2 flex"
         >
           <Input
-            placeholder="Search products..."
+              placeholder="Tìm kiếm sản phẩm..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="pr-10"

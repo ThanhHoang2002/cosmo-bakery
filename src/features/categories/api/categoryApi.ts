@@ -3,6 +3,7 @@ import { Item, sfLike, sfOr } from "spring-filter-query-builder";
 import { Category, CategoryFilterParams, CategoryResponse, CreateCategoryPayload, UpdateCategoryPayload } from "../types";
 
 import axiosClient from "@/lib/axios-client";
+import axiosPublic from "@/lib/axios-public";
 import { ApiResponse } from "@/types/apiResponse";
 
 
@@ -58,7 +59,7 @@ export const getCategories = async (params: CategoryFilterParams = {}): Promise<
     requestParams.sort = `${params.sortBy},${sortDirection}`;
   }
   
-  const response = await axiosClient.get<CategoryResponse>(BASE_PATH, { params: requestParams });
+  const response = await axiosPublic.get<CategoryResponse>(BASE_PATH, { params: requestParams });
   return response.data;
 };
 

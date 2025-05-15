@@ -12,6 +12,7 @@ import { MainLayout } from '@/components/layout/main-layout/MainLayout';
 import GlobalLoading from '@/components/loading/GlobalLoading';
 import AdminGuard from '@/features/auth/components/AdminGuard';
 import AuthGuard from '@/features/auth/components/AuthGuard';
+
 const ContactPage = lazy(() => import('@/app/pages/client/ContactPage'));
 const HomePage = lazy(() => import('@/app/pages/client/HomePage'));
 const AboutPage = lazy(() => import('@/app/pages/client/AboutPage'));
@@ -20,7 +21,6 @@ const DashboardPage = lazy(() => import('@/app/pages/admin/DashboardPage'));
 const ProductPage = lazy(() => import('@/app/pages/admin/ProductPage'));
 const OrderPage = lazy(() => import('@/app/pages/admin/OrderPage'));
 const CustomerPage = lazy(() => import('@/app/pages/admin/CustomerPage'));
-const Supplier = lazy(() => import('@/app/pages/admin/SupplierPage'));
 const AdminCategoryPage = lazy(() => import('@/app/pages/admin/CategoryPage'));
 const OrderConfirmation = lazy(() => import('@/features/checkout/components/OrderConfirmation'));
 const MyOrdersPage = lazy(() => import('@/app/pages/client/MyOrdersPage'));
@@ -104,10 +104,6 @@ const router = createBrowserRouter([
       {
         path: 'categories',
         element: <AdminCategoryPage />,
-      },
-      {
-        path: 'suppliers',
-        element: <Supplier />,
       }
     ],
   },

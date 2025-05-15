@@ -12,7 +12,6 @@ export const useProductsParams = () => {
     size: Number(searchParams.get("size")) || 15,
     search: searchParams.get("search") || undefined,
     status: searchParams.get("status") || undefined,
-    supplierId: Number(searchParams.get("supplierId")) || undefined,
     categoryName: searchParams.get("categoryName") || undefined,
     sortBy: searchParams.get("sortBy") || undefined,
     sortDirection: searchParams.get("sortDirection") || undefined,

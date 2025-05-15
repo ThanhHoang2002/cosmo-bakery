@@ -14,8 +14,8 @@ export const useCheckout = () => {
     onSuccess: (response) => {
       if(response.order.paymentMethod === PaymentMethod.COD){
         toast({
-          title: 'Order placed successfully',
-          description: `Your order #${response.order.id} has been placed successfully.`,
+          title: 'Đặt hàng thành công',
+          description: `Đơn hàng của bạn #${response.order.id} đã được đặt thành công.`,
         });
         navigate(`/confirmation/${response.order.id}`);
       }else{
@@ -24,8 +24,8 @@ export const useCheckout = () => {
     },
     onError: (error: Error) => {
       toast({
-        title: 'Checkout failed',
-        description: error.message || 'Something went wrong. Please try again.',
+        title: 'Thanh toán thất bại',
+        description: error.message || 'Đã xảy ra lỗi. Vui lòng thử lại.',
         variant: 'destructive',
       });
     }

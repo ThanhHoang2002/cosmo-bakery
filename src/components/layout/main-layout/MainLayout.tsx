@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
-import Footer from './Footer';
+import { Footer } from './Footer';
 import { Navbar } from './navbar/Navbar';
 
 import { AuthDialog } from '@/features/auth/components/AuthDialog';
@@ -10,7 +10,7 @@ import { ChatWidget } from '@/features/chat/components/ChatWidget';
 
 export const MainLayout = () => {
   const location = useLocation();
-  const { isOpen, setIsOpen } = useAuthFormStore();
+  const { isOpen, setIsOpen , mode , setMode } = useAuthFormStore();
 
   useEffect(() => {
     window.scrollTo({
@@ -24,7 +24,7 @@ export const MainLayout = () => {
       <main className="flex-1">
         <Outlet />
       </main>
-      {isOpen && <AuthDialog isOpen={isOpen} onClose={() => setIsOpen(false)} />}
+      {isOpen && <AuthDialog isOpen={isOpen} onClose={() => setIsOpen(false)} initialMode={mode} onModeChange={setMode} />}
         <ChatWidget />
       <Footer />
     </div>

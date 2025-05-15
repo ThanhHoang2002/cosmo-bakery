@@ -6,13 +6,13 @@ export enum PaymentMethod {
 export const PAYMENT_METHODS = [
   {
     id: PaymentMethod.COD,
-    name: 'Cash on delivery',
-    description: 'Pay when you receive your order'
+    name: 'Thanh toán khi nhận hàng',
+    description: 'Thanh toán khi nhận hàng'
   },
   {
     id: PaymentMethod.TRANSFER,
-    name: 'Bank transfer',
-    description: 'Pay via bank transfer'
+    name: 'Chuyển khoản',
+    description: 'Thanh toán qua chuyển khoản'
   }
 ];
 

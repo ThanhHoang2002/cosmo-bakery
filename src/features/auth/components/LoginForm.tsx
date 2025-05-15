@@ -35,7 +35,7 @@ export const LoginForm = ({
         
         <FormField
           id="password"
-          label="Password"
+          label="Mật khẩu"
           type="password"
           placeholder="••••••••"
           error={errors.password}
@@ -52,7 +52,7 @@ export const LoginForm = ({
               disabled={isSubmitting}
             />
             <label htmlFor="rememberMe" className="text-sm text-gray-600">
-              Remember me
+              Ghi nhớ tài khoản
             </label>
           </div>
           <Button
@@ -62,7 +62,7 @@ export const LoginForm = ({
             className="text-sm text-primary hover:text-primary/80"
             disabled={isSubmitting}
           >
-            Forgot password?
+            Quên mật khẩu?
           </Button>
         </div>
       </div>
@@ -73,7 +73,7 @@ export const LoginForm = ({
           className="h-12 w-full text-base font-medium"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Processing..." : "Login"}
+          {isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
         </Button>
       </div>
     </form>

@@ -56,15 +56,15 @@ export const useCart = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
       toast({
-        title: 'Success',
-        description: 'Product added to cart',
+        title: 'Thành công',
+        description: 'Sản phẩm đã được thêm vào giỏ hàng',
       });
     },
     onError: (error) => {
       console.error('Error adding item to cart:', error);
       toast({
-        title: 'Error',
-        description: 'Cannot add product to cart. Please try again.',
+        title: 'Lỗi',
+        description: 'Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại.',
         variant: 'destructive',
       });
     }
@@ -76,15 +76,15 @@ export const useCart = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
       toast({
-        title: 'Success',
-        description: 'Product removed from cart',
+        title: 'Thành công',
+        description: 'Sản phẩm đã được xóa khỏi giỏ hàng',
       });
     },
     onError: (error) => {
       console.error('Error removing item from cart:', error);
       toast({
-        title: 'Error',
-        description: 'Cannot remove product from cart. Please try again.',
+        title: 'Lỗi',
+        description: 'Không thể xóa sản phẩm khỏi giỏ hàng. Vui lòng thử lại.',
         variant: 'destructive',
       });
     }
@@ -97,15 +97,15 @@ export const useCart = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
       toast({
-        title: 'Success',
-        description: 'Product quantity updated',
+        title: 'Thành công',
+        description: 'Số lượng sản phẩm đã được cập nhật',
       });
     },
     onError: (error) => {
       console.error('Error updating item quantity:', error);
       toast({
-        title: 'Error',
-        description: 'Cannot update product quantity. Please try again.',
+        title: 'Lỗi',
+        description: 'Không thể cập nhật số lượng sản phẩm. Vui lòng thử lại.',
         variant: 'destructive',
       });
     }
@@ -117,15 +117,15 @@ export const useCart = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
       toast({
-        title: 'Success',
-        description: 'All cart items removed',
+        title: 'Thành công',
+        description: 'Tất cả sản phẩm đã được xóa khỏi giỏ hàng',
       });
     },
     onError: (error) => {
       console.error('Error clearing cart:', error);
       toast({
-        title: 'Error',
-        description: 'Cannot clear cart. Please try again.',
+        title: 'Lỗi',
+        description: 'Không thể xóa giỏ hàng. Vui lòng thử lại.',
         variant: 'destructive',
       });
     }
@@ -187,7 +187,7 @@ export const useCart = () => {
     clearCart: handleClearCart,
     reload: reloadCart,
     isLoading,
-    error: cartError ? 'An error occurred while loading the cart' : null,
+    error: cartError ? 'Đã xảy ra lỗi khi tải giỏ hàng' : null,
     isEmpty,
     ...summary
   };

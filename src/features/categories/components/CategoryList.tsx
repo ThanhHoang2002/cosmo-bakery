@@ -1,10 +1,10 @@
-import { Package2Icon } from "lucide-react";
 import { memo } from "react";
 
-import EmptyState from "@/components/ui/empty-state";
-import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { Category } from "../types";
 import { CategoryCard } from "./CategoryCard";
+
+import { LoadingIndicator } from "@/components/loading/LoadingIndicator";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface CategoryListProps {
   categories: Category[];
@@ -25,7 +25,6 @@ export const CategoryList = memo(({ categories, isLoading, onEdit, onDelete }: C
   if (categories.length === 0) {
     return (
       <EmptyState
-        icon={<Package2Icon className="h-10 w-10" />}
         title="Không có danh mục nào"
         description="Chưa có danh mục nào được tạo. Hãy thêm danh mục mới."
       />

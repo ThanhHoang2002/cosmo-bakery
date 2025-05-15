@@ -33,8 +33,8 @@ export const useCustomers = (initialFilters: CustomerFilterParams = {}) => {
         return await getCustomers(filters);
       } catch (error: unknown) {
         toast({
-          title: "Error",
-          description: "Could not load customers. Please try again later.",
+          title: "Lỗi",
+          description: "Không thể tải khách hàng. Vui lòng thử lại sau.",
           variant: "destructive",
         });
         throw error;
@@ -121,8 +121,8 @@ export const useCustomers = (initialFilters: CustomerFilterParams = {}) => {
           return await getCustomerById(id);
         } catch (error: unknown) {
           toast({
-            title: "Error",
-            description: "Could not load customer details. Please try again later.",
+            title: "Lỗi",
+            description: "Không thể tải thông tin khách hàng. Vui lòng thử lại sau.",
             variant: "destructive",
           });
           throw error;

@@ -2,8 +2,6 @@ import { motion } from "framer-motion";
 import { memo } from "react";
 
 import { EmptyState } from "@/components/ui/empty-state";
-import { LoginPrompt } from "@/features/auth/components/LoginPrompt";
-import useAuthStore from "@/features/auth/stores/authStore";
 import {
   CustomerOrderFilterBar,
   OrderDialog,
@@ -14,9 +12,6 @@ import { useMyOrders } from "@/features/orders/hooks";
 
 // Sử dụng memo để tối ưu hóa hiệu suất, tránh re-render không cần thiết
 const MyOrdersPage = memo(() => {
-  // Lấy trạng thái người dùng từ auth store
-  const { currentUser } = useAuthStore();
-  
   // Sử dụng custom hook để quản lý đơn hàng
   const {
     orders,
@@ -32,10 +27,6 @@ const MyOrdersPage = memo(() => {
     handlePageSizeChange
   } = useMyOrders();
 
-  // Nếu chưa đăng nhập, hiển thị thông báo
-  if (!currentUser) {
-    return <LoginPrompt message="Please login to view your orders" />;
-  }
 
   return (
     <motion.div

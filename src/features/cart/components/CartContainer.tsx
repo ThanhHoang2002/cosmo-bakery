@@ -12,6 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
+import { formatCurrency } from '@/utils/format';
 
 export const CartContainer = () => {
   const [clearCartDialogOpen, setClearCartDialogOpen] = useState(false);
@@ -38,15 +39,15 @@ export const CartContainer = () => {
     return (
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Your cart</h1>
-          <p className="mt-4 text-gray-600">Your cart is empty.</p>
+          <h1 className="text-3xl font-bold text-gray-900">Giỏ hàng của bạn</h1>
+          <p className="mt-4 text-gray-600">Giỏ hàng của bạn trống.</p>
           <Link 
             to="/category/paddles" 
             className="mt-8 inline-block rounded-md bg-black px-6 py-3 text-white hover:bg-gray-800"
             aria-label="Start shopping"
             tabIndex={0}
           >
-            Start shopping
+            Bắt đầu mua hàng
           </Link>
         </div>
       </div>
@@ -64,7 +65,7 @@ export const CartContainer = () => {
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">An error occurred</h3>
+              <h3 className="text-sm font-medium text-red-800">Đã xảy ra lỗi</h3>
               <div className="mt-2 text-sm text-red-700">
                 <p>{error}</p>
               </div>
@@ -73,7 +74,7 @@ export const CartContainer = () => {
                   onClick={() => window.location.reload()}
                   className="rounded-md bg-red-100 px-4 py-2 text-sm font-medium text-red-800 hover:bg-red-200"
                 >
-                  Try again
+                  Thử lại
                 </button>
               </div>
             </div>
@@ -96,7 +97,7 @@ export const CartContainer = () => {
         </div>
       )}
 
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Your cart</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">Giỏ hàng của bạn</h1>
       
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Cart Items */}
@@ -104,10 +105,10 @@ export const CartContainer = () => {
           <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow">
             <div className="border-b border-gray-200 bg-gray-50 px-4 py-3">
               <div className="grid grid-cols-12 items-center text-sm font-medium text-gray-700">
-                <div className="col-span-6 px-2">PRODUCT</div>
-                <div className="col-span-2 px-2 text-center">PRICE</div>
-                <div className="col-span-2 px-2 text-center">QUANTITY</div>
-                <div className="col-span-2 px-2 text-right">TOTAL</div>
+                <div className="col-span-6 px-2">Sản phẩm</div>
+                <div className="col-span-2 px-2 text-center">Giá</div>
+                <div className="col-span-2 px-2 text-center">Số lượng</div>
+                <div className="col-span-2 px-2 text-right">Tổng</div>
               </div>
             </div>
             
@@ -135,7 +136,7 @@ export const CartContainer = () => {
                   
                   {/* Price */}
                   <div className="col-span-2 text-center text-sm text-gray-700">
-                    {item.price.toLocaleString()} $
+                    {formatCurrency(item.price)}
                   </div>
                   
                   {/* Quantity */}
@@ -166,7 +167,7 @@ export const CartContainer = () => {
                   {/* Total & Remove */}
                   <div className="col-span-2 flex items-center justify-end gap-3">
                     <div className="text-sm font-medium text-gray-900">
-                      {(item.price * item.quantity).toLocaleString()} $
+                      { formatCurrency(item.price * item.quantity)}
                     </div>
                     <button
                       onClick={() => removeItem(item.id)}
@@ -194,7 +195,7 @@ export const CartContainer = () => {
                 className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
                 aria-label="Continue shopping"
               >
-                Continue shopping
+                Tiếp tục mua hàng
               </Link>
               <button 
                 onClick={() => setClearCartDialogOpen(true)}
@@ -202,7 +203,7 @@ export const CartContainer = () => {
                 className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-red-600 shadow-sm hover:bg-gray-50 hover:text-red-800 disabled:cursor-not-allowed disabled:opacity-50"
                 aria-label="Clear cart"
               >
-                Clear cart
+                Xóa giỏ hàng
               </button>
             </div>
           </div>
@@ -223,9 +224,9 @@ export const CartContainer = () => {
       <Dialog open={clearCartDialogOpen} onOpenChange={setClearCartDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Clear cart</DialogTitle>
+            <DialogTitle>Xóa giỏ hàng</DialogTitle>
             <DialogDescription>
-              Are you sure you want to remove all items from your cart? This action cannot be undone.
+              Bạn có chắc chắn muốn xóa tất cả các sản phẩm khỏi giỏ hàng của bạn? Hành động này không thể hoàn tác.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex justify-end gap-2 pt-4">
@@ -233,13 +234,13 @@ export const CartContainer = () => {
               onClick={() => setClearCartDialogOpen(false)}
               className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
             >
-              Cancel
+              Hủy bỏ
             </button>
             <button
               onClick={handleClearCart}
               className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700"
             >
-              Clear cart
+              Xóa giỏ hàng
             </button>
           </DialogFooter>
         </DialogContent>

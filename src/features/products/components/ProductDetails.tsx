@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
 import { useState, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import { Product } from '../types';
 
 import { useCart } from '@/features/cart/hooks/useCart';
+import { formatCurrency } from '@/utils/format';
 
 type ProductDetailsProps = {
   product: Product;
@@ -25,12 +28,9 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
     addItem(product?.id, quantity);
   };
 
-  const formattedDescription = product?.description
-    .split('|')
-    .map(paragraph => paragraph.trim())
-    .filter(Boolean)
-    .join('\n\n');
-
+  // Xử lý mô tả sản phẩm dưới dạng markdown
+  const markdownDescription = product?.description || '';
+  
   const toggleDescription = () => {
     setIsDescriptionExpanded(!isDescriptionExpanded);
   };
@@ -61,38 +61,34 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <h1 className="text-3xl font-bold text-gray-900">{product?.name}</h1>
-        
-        {product?.supplier && (
-          <div className="mt-2 text-sm text-gray-600">
-            Brand: {product?.supplier.name}
-          </div>
-        )}
-        
+           
         <div className="mt-4 flex items-center">
           <span className="text-2xl font-semibold text-gray-900">
-            {product?.sellPrice.toLocaleString()}$
+            {formatCurrency(product.sellPrice)}
           </span>
         </div>
 
         <div 
           ref={descriptionRef} 
-          className={`mt-6 text-gray-700 ${!isDescriptionExpanded ? 'line-clamp-3' : ''}`}
+          className={`prose prose-sm mt-6 max-w-none text-gray-700 ${!isDescriptionExpanded ? 'max-h-24 overflow-hidden' : ''}`}
         >
-          {formattedDescription}
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {markdownDescription}
+          </ReactMarkdown>
         </div>
         
-        {formattedDescription && formattedDescription.length > 0 && (
+        {markdownDescription && markdownDescription.length > 0 && (
           <button 
             onClick={toggleDescription}
             className="mt-1 text-left text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline focus:outline-none"
           >
-            {isDescriptionExpanded ? 'Collapse' : 'Read more ...'}
+            {isDescriptionExpanded ? 'Thu gọn' : 'Xem thêm ...'}
           </button>
         )}
 
         {/* Quantity selector */}
         <div className="mt-8">
-          <h3 className="text-sm font-medium text-gray-900">Quantity</h3>
+          <h3 className="text-sm font-medium text-gray-900">Số lượng</h3>
           <div className="mt-2 flex items-center">
             <button
               onClick={() => handleQuantityChange(quantity - 1)}
@@ -120,33 +116,29 @@ export const ProductDetails = ({ product }: ProductDetailsProps) => {
           whileTap={{ scale: 0.98 }}
           disabled={product?.quantity <= 0}
         >
-          {product?.quantity > 0 ? 'Add to cart' : 'Out of stock'}
+          {product?.quantity > 0 ? 'Thêm vào giỏ hàng' : 'Hết hàng'}
         </motion.button>
 
         {/* Product information */}
         <div className="mt-8 border-t border-gray-200 pt-8">
-          <h3 className="text-lg font-medium text-gray-900">Product information</h3>
+          <h3 className="text-lg font-medium text-gray-900">Thông tin sản phẩm</h3>
           <div className="mt-4 space-y-3">
             <div className="flex justify-between border-b border-gray-100 pb-2">
-              <span className="text-sm text-gray-500">Product code</span>
+              <span className="text-sm text-gray-500">Mã sản phẩm</span>
               <span className="text-sm font-medium">{product?.id}</span>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-2">
-              <span className="text-sm text-gray-500">Category</span>
+              <span className="text-sm text-gray-500">Danh mục</span>
               <span className="text-sm font-medium">{product?.category?.name || 'N/A'}</span>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-2">
-              <span className="text-sm text-gray-500">Supplier</span>
-              <span className="text-sm font-medium">{product?.supplier?.name || 'N/A'}</span>
-            </div>
-            <div className="flex justify-between border-b border-gray-100 pb-2">
-              <span className="text-sm text-gray-500">Status</span>
+              <span className="text-sm text-gray-500">Trạng thái</span>
               <span className={`text-sm font-medium ${product?.quantity > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {product?.quantity > 0 ? 'In stock' : 'Out of stock'}
+                {product?.quantity > 0 ? 'Còn hàng' : 'Hết hàng'}
               </span>
             </div>
             <div className="flex justify-between border-b border-gray-100 pb-2">
-              <span className="text-sm text-gray-500">Remaining quantity</span>
+              <span className="text-sm text-gray-500">Số lượng còn lại</span>
               <span className="text-sm font-medium">{product?.quantity}</span>
             </div>
           </div>

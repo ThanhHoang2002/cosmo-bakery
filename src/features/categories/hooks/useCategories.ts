@@ -32,8 +32,8 @@ export const useCategories = (initialFilters: CategoryFilterParams = {}) => {
         return await getCategories(filters);
       } catch (error: unknown) {
         toast({
-          title: "Error",
-          description: "Could not load categories. Please try again later.",
+          title: "Lỗi",
+          description: "Không thể tải danh mục. Vui lòng thử lại sau.",
           variant: "destructive",
         });
         throw error;
@@ -115,8 +115,8 @@ export const useCategories = (initialFilters: CategoryFilterParams = {}) => {
           return response.data;
         } catch (error: unknown) {
           toast({
-            title: "Error",
-            description: "Could not load category details. Please try again later.",
+            title: "Lỗi",
+            description: "Không thể tải chi tiết danh mục. Vui lòng thử lại sau.",
             variant: "destructive",
           });
           throw error;

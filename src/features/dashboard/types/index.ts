@@ -1,14 +1,28 @@
-export type PeriodFilter = "today" | "last7days" | "last30days" | "last12months" | "alltime";
+import { OrderStatus } from "@/features/orders/types";
+
+export type PeriodFilter = "today" | "week" | "month" | "year";
 
 export interface DashboardStats {
-  totalRevenue: number;
-  revenueGrowth: number;
-  totalOrders: number;
-  ordersGrowth: number;
-  productsSold: number;
-  productsGrowth: number;
-  newCustomers: number;
-  customersGrowth: number;
+  revenue: {
+    currentValue: number;
+    previousValue: number;
+    growthRate: number;
+  };
+  orders: {
+    currentValue: number;
+    previousValue: number;
+    growthRate: number;
+  };
+  productsSold: {
+    currentValue: number;
+    previousValue: number;
+    growthRate: number;
+  };
+  customers: {
+    currentValue: number;
+    previousValue: number;
+    growthRate: number;
+  };
 }
 
 export interface SalesDataPoint {
@@ -17,12 +31,11 @@ export interface SalesDataPoint {
 }
 
 export interface TopSellingProduct {
-  id: number;
-  name: string;
-  price: number;
-  imageSrc: string | null;
-  quantitySold: number;
-  revenue: number;
+  productId: number;
+  productName: string;
+  productImage: string;
+  totalQuantitySold: number;
+  totalRevenue: number;
 }
 
 export type PaymentMethod = "COD" | "TRANSFER";
@@ -44,6 +57,7 @@ export interface RecentOrder {
   totalPrice: number;
   paymentMethod: PaymentMethod;
   paymentStatus: PaymentStatus;
+  orderStatus: OrderStatus;
   createdAt: string;
   updatedAt: string;
   user: User;

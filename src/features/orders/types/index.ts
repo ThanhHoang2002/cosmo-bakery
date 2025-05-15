@@ -1,6 +1,6 @@
 export type PaymentMethod = 'COD' | 'TRANSFER' | 'CREDIT_CARD';
 export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
-export type OrderStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'DELIVERED' | 'CANCELLED';
+export type OrderStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
 
 export interface User {
   id: number;

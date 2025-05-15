@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 
+import GlobalLoading from '@/components/loading/GlobalLoading';
 import { ProductDetails } from '@/features/products/components/ProductDetails';
 import { ProductGrid } from '@/features/products/components/ProductGrid';
 import { useProductById, useProductsByCategory } from '@/features/products/hooks/useProducts';
@@ -35,22 +36,15 @@ export const ProductDetailsPage = () => {
   ) || [];
   
   if (isLoading) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-black"></div>
-          <p className="mt-4 text-lg font-medium text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
+    return <GlobalLoading/>;
   }
   
   if (isError || !product) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Product not found</h1>
-          <p className="mt-2 text-gray-600">The product you are looking for does not exist or has been deleted.</p>
+          <h1 className="text-2xl font-bold text-gray-900">Sản phẩm không tồn tại</h1>
+          <p className="mt-2 text-gray-600">Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
         </div>
       </div>
     );
@@ -85,7 +79,7 @@ export const ProductDetailsPage = () => {
         <div className="mt-24">
           <ProductGrid
             products={relatedProducts}
-            title="Related products"
+            title="Sản phẩm tương tự"
           />
         </div>
       )}

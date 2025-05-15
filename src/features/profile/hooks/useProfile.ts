@@ -23,8 +23,8 @@ export const useProfile = () => {
       setCurrentUser(updatedUser);
       queryClient.invalidateQueries({ queryKey: ['currentUser'] });
       toast({
-        title: "Profile updated",
-        description: "Your profile has been updated successfully.",
+        title: "Cập nhật thông tin thành công",
+        description: "Thông tin của bạn đã được cập nhật thành công.",
       });
       
       // Reset avatar file sau khi cập nhật thành công
@@ -32,8 +32,8 @@ export const useProfile = () => {
     },
     onError: (error: Error) => {
       toast({
-        title: "Update failed",
-        description: error.message || "Could not update profile. Please try again later.",
+        title: "Cập nhật thất bại",
+        description: error.message || "Không thể cập nhật thông tin. Vui lòng thử lại sau.",
         variant: "destructive",
       });
     }
@@ -44,14 +44,14 @@ export const useProfile = () => {
     mutationFn: (data: ChangePasswordRequest) => profileApi.changePassword(data),
     onSuccess: () => {
       toast({
-        title: "Password changed",
-        description: "Your password has been changed successfully.",
+        title: "Đổi mật khẩu thành công",
+        description: "Mật khẩu của bạn đã được đổi thành công.",
       });
     },
     onError: (error: Error) => {
       toast({
-        title: "Change password failed",
-        description: error.message || "Could not change password. Please check your current password.",
+        title: "Đổi mật khẩu thất bại",
+        description: error.message || "Không thể đổi mật khẩu. Vui lòng kiểm tra mật khẩu hiện tại.",
         variant: "destructive",
       });
     }

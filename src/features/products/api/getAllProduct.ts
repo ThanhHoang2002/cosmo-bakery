@@ -10,7 +10,6 @@ export interface ProductsParams {
   search?: string;
   categoryName?: string;
   status?: string;
-  supplierId?: number;
   sortBy?: string;
   sortDirection?: string;
   minPrice?: number;
@@ -26,7 +25,6 @@ export const getAllProduct = async (
       params.status && sfEqual("status", params.status),
       params.minPrice && sfGe("sellPrice", params.minPrice),
       params.maxPrice && sfLe("sellPrice", params.maxPrice),
-      params.supplierId && sfEqual("supplier.id", params.supplierId),
 
     ].filter(Boolean) as Item[]
   );

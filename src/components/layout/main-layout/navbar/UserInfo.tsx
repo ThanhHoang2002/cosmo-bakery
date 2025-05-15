@@ -30,10 +30,11 @@ const subMenus: SubMenu[] = [
 
 const UserInfo = () => {
   const { currentUser, logout  } = useAuthStore();
-  const { setIsOpen } = useAuthFormStore();
+  const { setIsOpen, setMode } = useAuthFormStore();
   const handleLogout = () => {
     logout()
     setIsOpen(false);
+    setMode("login");
   };
 
   if (!currentUser) {

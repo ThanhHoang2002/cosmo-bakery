@@ -41,8 +41,8 @@ export const useMyOrders = (initialFilters: Partial<OrderFilterParams> = {}) => 
         return await getAllOrders(filters);
       } catch (error: unknown) {
         toast({
-          title: "Error",
-          description: "Could not load your orders. Please try again later.",
+          title: "Lỗi",
+          description: "Không thể tải đơn hàng của bạn. Vui lòng thử lại sau.",
           variant: "destructive",
         });
         throw error;

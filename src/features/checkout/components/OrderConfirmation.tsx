@@ -22,17 +22,17 @@ const OrderConfirmation = () => {
           <CheckCircle className="h-8 w-8 text-green-600" />
         </div>
         
-        <h1 className="mb-2 text-2xl font-bold text-gray-900">Order Completed!</h1>
+        <h1 className="mb-2 text-2xl font-bold text-gray-900">Đơn hàng đã hoàn tất!</h1>
         <p className="mb-6 text-gray-600">
-          Thank you for your order. Your order has been received and will be processed soon.
+          Cảm ơn bạn đã đặt hàng. Đơn hàng của bạn đã được nhận và sẽ được xử lý sớm.
         </p>
         
         <div className="mb-8 rounded-md bg-gray-50 p-4">
           <p className="text-sm text-gray-600">
-            Your order number: <span className="font-bold text-gray-900">#{orderId}</span>
+            Mã đơn hàng của bạn: <span className="font-bold text-gray-900">#{orderId}</span>
           </p>
           <p className="text-sm text-gray-600">
-            You will receive an email confirmation shortly.
+            Bạn sẽ nhận được email xác nhận sớm.
           </p>
         </div>
         
@@ -41,13 +41,13 @@ const OrderConfirmation = () => {
             to="/"
             className="flex-1 rounded-md border border-gray-300 px-6 py-3 text-center text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
           >
-            Return to Home
+            Trở lại trang chủ
           </Link>
           <Link
             to="/category/paddles"
             className="flex-1 rounded-md bg-primary px-6 py-3 text-center text-sm font-medium text-white shadow-sm transition hover:bg-primary/90"
           >
-            Continue Shopping
+            Tiếp tục mua hàng
           </Link>
         </div>
       </div>

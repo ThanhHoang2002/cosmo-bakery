@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { useToast } from "@/hooks/use-toast";
 import { deleteCategory } from "../api/categoryApi";
+
+import { useToast } from "@/hooks/use-toast";
 
 interface UseDeleteCategoryProps {
   onSuccess?: () => void;

@@ -10,14 +10,14 @@ import { useCheckout } from '../hooks/useCheckout';
 // Define validation schema
 const checkoutSchema = z.object({
   phone: z.string()
-    .min(10, 'Phone number must be at least 10 digits')
-    .max(15, 'Phone number must be at most 15 digits')
-    .regex(/^[0-9]+$/, 'Phone number must contain only digits'),
+    .min(10, 'Số điện thoại phải có ít nhất 10 chữ số')
+    .max(15, 'Số điện thoại phải có tối đa 15 chữ số')
+    .regex(/^[0-9]+$/, 'Số điện thoại phải chứa chữ số'),
   address: z.string()
-    .min(5, 'Address is too short')
-    .max(200, 'Address is too long'),
+    .min(5, 'Địa chỉ phải có ít nhất 5 ký tự')
+    .max(200, 'Địa chỉ phải có tối đa 200 ký tự'),
   paymentMethod: z.nativeEnum(PaymentMethod, {
-    required_error: 'Please select a payment method',
+    required_error: 'Vui lòng chọn phương thức thanh toán',
   }),
 });
 
@@ -57,19 +57,19 @@ export const CheckoutForm = () => {
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-4 text-xl font-semibold text-gray-900">Checkout Information</h2>
+      <h2 className="mb-4 text-xl font-semibold text-gray-900">Thông tin thanh toán</h2>
       
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Phone number */}
         <div className="mb-4">
           <label htmlFor="phone" className="mb-2 block text-sm font-medium text-gray-700">
-            Phone number <span className="text-red-500">*</span>
+            Số điện thoại <span className="text-red-500">*</span>
           </label>
           <input
             id="phone"
             type="tel"
             className={`w-full rounded-md border ${errors.phone ? 'border-red-500' : 'border-gray-300'} px-3 py-2 text-gray-700 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary`}
-            placeholder="Enter your phone number"
+            placeholder="Nhập số điện thoại"
             {...register('phone')}
             aria-invalid={errors.phone ? 'true' : 'false'}
             disabled={isLoading}
@@ -82,13 +82,13 @@ export const CheckoutForm = () => {
         {/* Address */}
         <div className="mb-6">
           <label htmlFor="address" className="mb-2 block text-sm font-medium text-gray-700">
-            Delivery address <span className="text-red-500">*</span>
+            Địa chỉ giao hàng <span className="text-red-500">*</span>
           </label>
           <textarea
             id="address"
             rows={3}
             className={`w-full rounded-md border ${errors.address ? 'border-red-500' : 'border-gray-300'} px-3 py-2 text-gray-700 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary`}
-            placeholder="Enter your delivery address"
+            placeholder="Nhập địa chỉ giao hàng"
             {...register('address')}
             aria-invalid={errors.address ? 'true' : 'false'}
             disabled={isLoading}
@@ -101,7 +101,7 @@ export const CheckoutForm = () => {
         {/* Payment method */}
         <div className="mb-6">
           <label className="mb-2 block text-sm font-medium text-gray-700">
-            Payment method <span className="text-red-500">*</span>
+            Phương thức thanh toán <span className="text-red-500">*</span>
           </label>
           
           <div className="mt-2 space-y-2">
@@ -141,10 +141,10 @@ export const CheckoutForm = () => {
           {isLoading ? (
             <div className="flex items-center justify-center">
               <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-              Processing...
+              Đang xử lý...
             </div>
           ) : (
-            'Place Order'
+            'Đặt hàng'
           )}
         </button>
       </form>

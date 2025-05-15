@@ -30,12 +30,6 @@ export interface Product {
   quantity: number;
   image: string;
   status: string;
-  supplier: {
-    id: number;
-    name: string;
-    description: string;
-    image: string | null;
-  };
   category: {
     id: number;
     name: string;

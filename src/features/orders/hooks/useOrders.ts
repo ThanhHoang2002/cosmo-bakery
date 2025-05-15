@@ -36,8 +36,8 @@ export const useOrders = (initialFilters: OrderFilterParams = {}) => {
         return await getAllOrders(filters);
       } catch (error: unknown) {
         toast({
-          title: "Error",
-          description: "Could not load orders. Please try again later.",
+          title: "Lỗi",
+          description: "Không thể tải đơn hàng. Vui lòng thử lại sau.",
           variant: "destructive",
         });
         throw error;
@@ -53,15 +53,15 @@ export const useOrders = (initialFilters: OrderFilterParams = {}) => {
       updatePaymentStatus(id, status),
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Payment status updated successfully.",
+        title: "Thành công",
+        description: "Trạng thái thanh toán đã được cập nhật thành công.",
       });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
     onError: (error) => {
       toast({
-        title: "Error",
-        description: "Could not update payment status. Please try again later.",
+        title: "Lỗi",
+        description: "Không thể cập nhật trạng thái thanh toán. Vui lòng thử lại sau.",
         variant: "destructive",
       });
       console.error("Error updating payment status:", error);

@@ -17,7 +17,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
   const {setCurrentUser} = useAuthStore()
-  const {setIsOpen} = useAuthFormStore()
+  const {setIsOpen, setMode} = useAuthFormStore()
   const { data, error } = useQuery({
     queryKey: ["info"],
     queryFn: () => getCurrentUser(),
@@ -25,6 +25,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   });
   useEffect(() => {
     if (!token || error) {
+      setMode("login")
       setIsOpen(true)
       navigate("/");
     }

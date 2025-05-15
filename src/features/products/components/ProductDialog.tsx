@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-import { Product, Supplier } from "../types";
+import { Product } from "../types";
 
 
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useCategories } from "@/features/categories/hooks/useCategories";
 import { Category } from "@/features/categories/types";
-import { useSuppliers } from "@/features/suppliers/hooks/useSuppliers";
 
 interface ProductDialogProps {
   open: boolean;
@@ -42,7 +41,6 @@ interface FormProduct {
   quantity: number;
   status: string;
   categoryId?: number;
-  supplierId?: number;
 }
 
 const ProductDialog = ({
@@ -66,10 +64,6 @@ const ProductDialog = ({
   const [imageChanged, setImageChanged] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  // Fetch suppliers using the hook
-  const { data: suppliersData, isLoading: isSuppliersLoading } = useSuppliers();
-  // Extract suppliers from the response or use empty array as fallback
-  const suppliers: Supplier[] = suppliersData?.result || [];
 
   // Fetch categories using the hook
   const { categories, isLoading: isCategoriesLoading } = useCategories();
@@ -84,7 +78,6 @@ const ProductDialog = ({
         quantity: product.quantity,
         status: product.status,
         categoryId: product.category?.id,
-        supplierId: product.supplier?.id,
       });
       setImagePreview(product.image || "");
       setImageFile(null);
@@ -133,10 +126,6 @@ const ProductDialog = ({
     setFormData({ ...formData, categoryId });
   };
 
-  const handleSupplierChange = (value: string) => {
-    const supplierId = parseInt(value, 10);
-    setFormData({ ...formData, supplierId });
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -274,33 +263,6 @@ const ProductDialog = ({
             </div>
             
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="supplier" className="text-right">
-                Supplier
-              </Label>
-              <Select
-                value={formData.supplierId?.toString()}
-                onValueChange={handleSupplierChange}
-              >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select a supplier" />
-                </SelectTrigger>
-                <SelectContent>
-                  {isSuppliersLoading ? (
-                    <SelectItem value="loading" disabled>
-                      Loading suppliers...
-                    </SelectItem>
-                  ) : (
-                    suppliers.map((supplier) => (
-                      <SelectItem key={supplier.id} value={supplier.id.toString()}>
-                        {supplier.name}
-                      </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="status" className="text-right">
                 Status
               </Label>
@@ -357,7 +319,7 @@ const ProductDialog = ({
             </Button>
             <Button 
               type="submit" 
-              disabled={isCategoriesLoading || isSuppliersLoading || isSubmitting}
+              disabled={isCategoriesLoading || isSubmitting}
             >
               {isSubmitting ? (
                 <>

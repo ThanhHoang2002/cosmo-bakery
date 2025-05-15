@@ -116,8 +116,8 @@ export const AuthDialog = ({
     } catch (error) {
       console.error("Login error:", error);
       toast({
-        title: "Error",
-        description: "Email or password is incorrect",
+        title: "Lỗi",
+        description: "Email hoặc mật khẩu không chính xác",
         variant: "destructive",
       });
     }
@@ -134,8 +134,8 @@ export const AuthDialog = ({
     } catch (error) {
       console.error("Registration error:", error);
       toast({
-        title: "Error",
-        description: "Email already exists",
+        title: "Lỗi",
+        description: "Email đã tồn tại",
         variant: "destructive",
       });
     }
@@ -189,11 +189,11 @@ export const AuthDialog = ({
             >
               <div className="absolute inset-0 bg-primary/40" />
               <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
-                <h2 className="mb-4 text-3xl font-bold text-white">HoangTu Sport</h2>
+                <h2 className="mb-4 text-3xl font-bold text-white">Cosmo Bakery</h2>
                 <p className="text-md mb-6 max-w-md leading-relaxed text-white">
                   {mode === "login"
-                    ? "Login to experience our services and receive attractive offers."
-                    : "Register an account to experience our services and receive attractive offers."
+                    ? "Đăng nhập để trải nghiệm dịch vụ và nhận ưu đãi hấp dẫn."
+                    : "Đăng ký tài khoản để trải nghiệm dịch vụ và nhận ưu đãi hấp dẫn."
                   }
                 </p>
               </div>
@@ -207,12 +207,12 @@ export const AuthDialog = ({
           )}>
             <DialogHeader className="mb-6">
               <DialogTitle className="text-center text-2xl font-bold">
-                {mode === "login" ? "Login" : "Register"}
+                {mode === "login" ? "Đăng nhập" : "Đăng ký"}
               </DialogTitle>
               <DialogDescription className="text-center">
                 {mode === "login"
-                  ? "Login to your account to continue."
-                  : "Create a new account to experience our services."}
+                  ? "Đăng nhập vào tài khoản của bạn để tiếp tục."
+                  : "Tạo tài khoản mới để trải nghiệm dịch vụ."}
               </DialogDescription>
             </DialogHeader>
 
@@ -236,7 +236,7 @@ export const AuthDialog = ({
 
             <div className="flex items-center justify-center space-x-2 border-t pt-6">
               <p className="text-sm text-gray-500">
-                {mode === "login" ? "Don't have an account?" : "Already have an account?"}
+                {mode === "login" ? "Chưa có tài khoản?" : "Đã có tài khoản?"}
               </p>
               <Button
                 type="button"
@@ -245,7 +245,7 @@ export const AuthDialog = ({
                 className="h-10 p-0 text-sm"
                 disabled={isDisabled}
               >
-                {mode === "login" ? "Register now" : "Login"}
+                {mode === "login" ? "Đăng ký ngay" : "Đăng nhập"}
               </Button>
             </div>
           </div>

@@ -3,7 +3,6 @@ import {
   ShoppingBasket, 
   Users,
   X,
-  Factory,
   List,
   ShoppingBag
 } from 'lucide-react';
@@ -169,21 +168,6 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <span className="ml-3">Categories</span>
                   </div>
                 </NavLink>
-              </li>
-
-              {/* Suppliers */}
-              <li className={`mb-0.5 rounded-sm px-3 py-2 ${pathname.includes('/admin/suppliers') && 'bg-primary/10'}`}>
-                <NavLink
-                  to="/admin/suppliers"
-                  className={`block truncate text-sm font-medium ${
-                    pathname.includes('/admin/suppliers') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <Factory className="h-5 w-5" />
-                    <span className="ml-3">Suppliers</span>
-                  </div>
-                </NavLink>  
               </li>
             </ul>
           </div>
