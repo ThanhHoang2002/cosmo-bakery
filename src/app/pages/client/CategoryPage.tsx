@@ -1,5 +1,5 @@
 import { Loader2, Search } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -12,29 +12,31 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useCart } from '@/features/cart';
+import { useCategoryById } from '@/features/categories/hooks';
 import { ProductGrid } from '@/features/products/components/ProductGrid';
 import { useProductsParams } from '@/features/products/hooks/useProductParams';
 import { useProductsByCategory } from '@/features/products/hooks/useProducts';
 import { useDebounce } from '@/hooks/useDebounce';
-import { mappingCategoryName } from '@/utils/mappingCategoryName';
-
-// Mapping giữa ID danh mục và mô tả
-const CATEGORY_DESCRIPTIONS: Record<string, string> = {
-  'Vợt': 'Discover the best pickleball paddles for all skill levels.',
-  'Phụ kiện': 'Enhance your pickleball experience with essential accessories.',
-};
 
 // Số sản phẩm mỗi trang
 export const CategoryPage = () => {
-  const { category } = useParams<{ category: string }>();
+  const { categoryId } = useParams<{ categoryId: string }>();
   const { filters, updateFilters } = useProductsParams();
-  const {addItem} = useCart()
-  // Lấy các tham số lọc từ URL
-  const minPrice = filters.minPrice;
-  const maxPrice = filters.maxPrice;
-  const sortBy = filters.sortBy;
-  const sortDirection = filters.sortDirection;
-  const searchTerm = filters.search;
+  const { addItem } = useCart();
+  
+  // Lấy thông tin danh mục từ ID
+  const { data: categoryData, isLoading: isCategoryLoading } = useCategoryById(
+    categoryId ? parseInt(categoryId) : 0
+  );
+  
+  // Trích xuất các tham số lọc từ URL đã được memo hóa
+  const { minPrice, maxPrice, sortBy, sortDirection, searchTerm } = useMemo(() => ({
+    minPrice: filters.minPrice,
+    maxPrice: filters.maxPrice,
+    sortBy: filters.sortBy,
+    sortDirection: filters.sortDirection,
+    searchTerm: filters.search
+  }), [filters]);
   
   // State để lưu trữ giá trị đang nhập trước khi debounce
   const [minPriceInput, setMinPriceInput] = useState<number | undefined>(minPrice);
@@ -47,61 +49,87 @@ export const CategoryPage = () => {
   const debouncedSearchTerm = useDebounce<string>(searchInput, { delay: 500 });
   
   // Lưu trữ category hiện tại để theo dõi thay đổi
-  const [previousCategory, setPreviousCategory] = useState<string | undefined>(category);
+  const [previousCategory, setPreviousCategory] = useState<string | undefined>(categoryId);
   
-  // Cập nhật category filter từ URL parameter
+  // Xử lý thay đổi category - được memo hóa để tránh tạo lại hàm
+  const handleCategoryChange = useCallback(() => {
+    if (!categoryId) return;
+    
+    // Reset search
+    setSearchInput('');
+    
+    // Reset price inputs
+    setMinPriceInput(undefined);
+    setMaxPriceInput(undefined);
+    
+    // Cập nhật filters với category mới và reset các bộ lọc
+    updateFilters({
+      categoryId: parseInt(categoryId),
+      size: 18,
+      page: 1,
+      search: undefined,
+      minPrice: undefined,
+      maxPrice: undefined,
+      sortBy: undefined,
+      sortDirection: undefined
+    });
+    
+    // Cập nhật previous category
+    setPreviousCategory(categoryId);
+  }, [categoryId, updateFilters]);
+  
+  // Cập nhật category filter từ URL parameter - chỉ chạy khi categoryId thay đổi
   useEffect(() => {
-    if (category) {
-      // Nếu category thay đổi, reset search và các bộ lọc khác
-      if (category !== previousCategory) {
-        // Reset search
-        setSearchInput('');
-        
-        // Reset price inputs
-        setMinPriceInput(undefined);
-        setMaxPriceInput(undefined);
-        
-        // Cập nhật filters với category mới và reset các bộ lọc
-        updateFilters({
-          categoryName: mappingCategoryName(category),
-          size: 18,
-          page: 1,
-          search: undefined,
-          minPrice: undefined,
-          maxPrice: undefined,
-          sortBy: undefined,
-          sortDirection: undefined
-        });
-        
-        // Cập nhật previous category
-        setPreviousCategory(category);
-      } else {
-        // Nếu không thay đổi category, chỉ cập nhật categoryName
-        updateFilters({
-          categoryName: mappingCategoryName(category),
-          size: 18
-        });
-      }
+    if (categoryId && categoryId !== previousCategory) {
+      handleCategoryChange();
     }
-  }, [category, previousCategory, updateFilters]);
+  }, [categoryId, previousCategory, handleCategoryChange]);
+  
+  // Đảm bảo categoryId luôn được áp dụng vào filters khi component mount hoặc khi categoryId thay đổi
+  useEffect(() => {
+    if (categoryId && (!filters.categoryId || parseInt(categoryId) !== filters.categoryId)) {
+      console.log('CategoryId needs update in filters', {
+        categoryId,
+        currentFilterCategoryId: filters.categoryId,
+        currentPage: filters.page
+      });
+      
+      // Cập nhật categoryId mà không làm mất các tham số lọc khác
+      // Sử dụng setImmediate để đảm bảo chỉ cập nhật một lần sau mỗi render cycle
+      const timerId = setTimeout(() => {
+        updateFilters({
+          categoryId: parseInt(categoryId)
+        });
+      }, 0);
+      
+      return () => clearTimeout(timerId);
+    }
+  }, [categoryId, filters.categoryId, updateFilters]);
   
   // Fetch sản phẩm theo danh mục
   const { data: productData, isLoading, isFetching } = useProductsByCategory(
-    mappingCategoryName(category ?? ''), 
+    parseInt(categoryId ?? ''), 
     filters
   );
   
-  const meta = productData?.meta;
-  const totalPages = meta?.pages || 0;
-  const currentPage = filters.page || 1;
+  // Memo hóa meta data để tránh tính toán lại không cần thiết
+  const { totalPages, currentPage } = useMemo(() => ({
+    totalPages: productData?.meta?.pages || 0,
+    currentPage: filters.page || 1
+  }), [productData?.meta, filters.page]);
   
-  // Tạo tiêu đề dựa trên danh mục
-  const getPageTitle = () => {
-    if (!category) {
-      return 'All';
+  // Tạo tiêu đề dựa trên danh mục - được memo hóa để tránh tính toán lại
+  const pageTitle = useMemo(() => {
+    if (isCategoryLoading) {
+      return 'Đang tải...';
     }
-    return category;
-  };
+    
+    if (!categoryData) {
+      return 'Tất cả sản phẩm';
+    }
+    
+    return categoryData.name;
+  }, [isCategoryLoading, categoryData]);
   
   // Cập nhật URL khi giá trị debounced thay đổi
   useEffect(() => {
@@ -123,20 +151,51 @@ export const CategoryPage = () => {
     }
   }, [debouncedSearchTerm, searchTerm, updateFilters]);
   
-  // Xử lý xóa search
-  const handleClearSearch = () => {
+  // Xử lý xóa search - được memo hóa để tránh tạo lại hàm
+  const handleClearSearch = useCallback(() => {
     setSearchInput('');
     updateFilters({ search: undefined, page: 1 });
-  };
+  }, [updateFilters]);
   
-  // Xử lý chuyển trang
-  const handlePageChange = (page: number) => {
-    updateFilters({ page });
-  };
+  // Xử lý thay đổi giá tối thiểu - đã được memo hóa
+  const handleMinPriceChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value === '' ? undefined : Number(e.target.value);
+    setMinPriceInput(value);
+  }, []);
   
-
-  // Xử lý thay đổi sắp xếp
-  const handleSortChange = (value: string) => {
+  // Xử lý thay đổi giá tối đa - đã được memo hóa
+  const handleMaxPriceChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value === '' ? undefined : Number(e.target.value);
+    setMaxPriceInput(value);
+  }, []);
+  
+  // Xử lý reset bộ lọc giá - đã được memo hóa
+  const handleResetPriceFilter = useCallback(() => {
+    setMinPriceInput(undefined);
+    setMaxPriceInput(undefined);
+    updateFilters({ minPrice: undefined, maxPrice: undefined, page: 1 });
+  }, [updateFilters]);
+  
+  // Xử lý nhập tìm kiếm - đã được memo hóa
+  const handleSearchInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+  }, []);
+  
+  // Xử lý chuyển trang - đã được memo hóa
+  const handlePageChange = useCallback((page: number) => {
+    console.log('Page change requested:', page, 'Current page:', filters.page);
+    if (page !== filters.page) {
+      updateFilters({ page });
+    }
+  }, [filters.page, updateFilters]);
+  
+  // Theo dõi sự thay đổi trang - log để debug
+  useEffect(() => {
+    console.log('Current page from filters:', filters.page);
+  }, [filters.page]);
+  
+  // Xử lý thay đổi sắp xếp - đã được memo hóa
+  const handleSortChange = useCallback((value: string) => {
     if (!value) {
       updateFilters({ 
         sortBy: undefined, 
@@ -149,13 +208,13 @@ export const CategoryPage = () => {
     const [field, direction] = value.split('-');
     updateFilters({ 
       sortBy: field, 
-      sortDirection: direction,
+      sortDirection: direction as 'asc' | 'desc',
       page: 1
     });
-  };
+  }, [updateFilters]);
 
-  // Tạo các nút phân trang
-  const renderPaginationItems = () => {
+  // Tạo các nút phân trang - đã được memo hóa để tránh tạo lại khi re-render
+  const paginationItems = useMemo(() => {
     // Mảng chứa các nút hiển thị
     const items = [];
     
@@ -250,14 +309,14 @@ export const CategoryPage = () => {
     }
     
     return items;
-  };
+  }, [totalPages, currentPage, handlePageChange]);
   
-  if (!category) {
+  if (!categoryId) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Category not found</h1>
-          <p className="mt-2 text-gray-600">The category you are looking for does not exist.</p>
+          <h1 className="text-2xl font-bold text-gray-900">Danh mục không tồn tại</h1>
+          <p className="mt-2 text-gray-600">Danh mục bạn đang tìm kiếm không tồn tại.</p>
         </div>
       </div>
     );
@@ -266,9 +325,9 @@ export const CategoryPage = () => {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-12">
-        <h1 className="text-3xl font-bold capitalize text-gray-900">{getPageTitle()}</h1>
+        <h1 className="text-3xl font-bold capitalize text-gray-900">{pageTitle}</h1>
         <p className="mt-4 text-gray-600">
-          {CATEGORY_DESCRIPTIONS[category] || 'Discover the best pickleball paddles for all skill levels'}
+          {categoryData?.description || "Khám phá những sản phẩm tốt nhất cho tất cả nhu cầu của bạn"}
         </p>
       </div>
       
@@ -283,7 +342,7 @@ export const CategoryPage = () => {
             className="w-full rounded-md border border-gray-300 py-3 pl-10 pr-12 focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
             placeholder="Search products..."
             value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
+            onChange={handleSearchInputChange}
           />
           {searchInput && (
             <button
@@ -301,41 +360,35 @@ export const CategoryPage = () => {
         <div className="hidden md:block">
           <div className="sticky top-24 space-y-8">
             <div>
-              <h3 className="text-lg font-medium text-gray-900">Filters</h3>
+              <h3 className="text-lg font-medium text-gray-900">Bộ lọc</h3>
                             
               {/* Lọc theo giá */}
               <div className="mt-6">
-                <h4 className="text-sm font-medium text-gray-900">Price</h4>
+                <h4 className="text-sm font-medium text-gray-900">Giá</h4>
                 <div className="mt-2 grid grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="price-min" className="sr-only">
-                      Lowest price
+                      Giá thấp nhất
                     </label>
                     <input
                       type="number"
                       id="price-min"
                       placeholder="Min"
                       value={minPriceInput ?? ''}
-                      onChange={(e) => {
-                        const value = e.target.value === '' ? undefined : Number(e.target.value);
-                        setMinPriceInput(value);
-                      }}
+                      onChange={handleMinPriceChange}
                       className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
                     />
                   </div>
                   <div>
                     <label htmlFor="price-max" className="sr-only">
-                      Highest price
+                      Giá cao nhất
                     </label>
                     <input
                       type="number"
                       id="price-max"
                       placeholder="Max"
                       value={maxPriceInput ?? ''}
-                      onChange={(e) => {
-                        const value = e.target.value === '' ? undefined : Number(e.target.value);
-                        setMaxPriceInput(value);
-                      }}
+                      onChange={handleMaxPriceChange}
                       className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
                     />
                   </div>
@@ -343,31 +396,27 @@ export const CategoryPage = () => {
                 {/* Reset button for price filter */}
                 {(minPrice !== undefined || maxPrice !== undefined) && (
                   <button
-                    onClick={() => {
-                      setMinPriceInput(undefined);
-                      setMaxPriceInput(undefined);
-                      updateFilters({ minPrice: undefined, maxPrice: undefined, page: 1 });
-                    }}
+                    onClick={handleResetPriceFilter}
                     className="mt-2 text-xs text-gray-600 hover:text-black"
                   >
-                    Reset price filter
+                    Reset giá
                   </button>
                 )}
               </div>
               
               {/* Sắp xếp */}
               <div className="mt-6">
-                <h4 className="text-sm font-medium text-gray-900">Sort</h4>
+                <h4 className="text-sm font-medium text-gray-900">Sắp xếp</h4>
                 <select
                   value={sortBy && sortDirection ? `${sortBy}-${sortDirection}` : ''}
                   onChange={(e) => handleSortChange(e.target.value)}
                   className="mt-2 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
                 >
-                  <option value="">Default</option>
-                  <option value="sellPrice-asc">Price: Low to High</option>
-                  <option value="sellPrice-desc">Price: High to Low</option>
-                  <option value="name-asc">Name: A-Z</option>
-                  <option value="name-desc">Name: Z-A</option>
+                  <option value="">Mặc định</option>
+                  <option value="sellPrice-asc">Giá: Thấp đến Cao</option>
+                  <option value="sellPrice-desc">Giá: Cao đến Thấp</option>
+                  <option value="name-asc">Tên: A-Z</option>
+                  <option value="name-desc">Tên: Z-A</option>
                 </select>
               </div>
             </div>
@@ -386,7 +435,7 @@ export const CategoryPage = () => {
                 className="text-sm text-blue-600 hover:text-blue-800"
                 onClick={handleClearSearch}
               >
-                Clear search
+                Xóa tìm kiếm
               </button>
             </div>
           )}
@@ -394,7 +443,7 @@ export const CategoryPage = () => {
           <ProductGrid 
             products={productData?.result || []}
             cols={3}
-            emptyMessage={isLoading ? 'Loading products...' : 'No products found matching your criteria.'}
+            emptyMessage={isLoading ? 'Đang tải sản phẩm...' : 'Không tìm thấy sản phẩm phù hợp.'}
             addItem={addItem}
           />
           
@@ -418,7 +467,7 @@ export const CategoryPage = () => {
                 </PaginationItem>
                 
                 {/* Các nút số trang */}
-                {renderPaginationItems()}
+                {paginationItems}
                 
                 {/* Nút Next */}
                 <PaginationItem>

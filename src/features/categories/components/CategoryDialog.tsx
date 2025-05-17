@@ -1,3 +1,6 @@
+import { Category } from "../types";
+import { CategoryForm } from "./CategoryForm";
+
 import {
   Dialog,
   DialogContent,
@@ -5,8 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Category } from "../types";
-import { CategoryForm } from "./CategoryForm";
 
 interface CategoryDialogProps {
   isOpen: boolean;
@@ -34,11 +35,11 @@ export const CategoryDialog = ({
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>
-            {isEditMode ? "Cập nhật danh mục" : "Thêm danh mục mới"}
+            {isEditMode ? "Sửa danh mục" : "Thêm danh mục mới"}
           </DialogTitle>
           <DialogDescription>
             {isEditMode
-              ? "Chỉnh sửa thông tin danh mục hiện có"
+              ? "Sửa thông tin danh mục hiện có"
               : "Nhập thông tin để tạo danh mục mới"}
           </DialogDescription>
         </DialogHeader>

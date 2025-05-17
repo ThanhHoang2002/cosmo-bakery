@@ -18,10 +18,10 @@ export const useAllProducts = (params: ProductsParams = {}) => {
 /**
  * Hook để lấy sản phẩm theo danh mục
  */
-export const useProductsByCategory = (categoryName: string, params: ProductsParams = {}) => {
+export const useProductsByCategory = (categoryId: number, params: ProductsParams = {}) => {
   return useQuery({
-    queryKey: ['products', 'category', categoryName, params],
-    queryFn:  async () => await getAllProduct({ ...params, categoryName })
+    queryKey: ['products', 'category', categoryId, params],
+    queryFn:  async () => await getAllProduct({ ...params, categoryId })
   });
 };
 

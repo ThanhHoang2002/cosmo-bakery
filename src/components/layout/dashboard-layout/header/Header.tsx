@@ -24,7 +24,7 @@ const Header = ({ sidebarOpen, setSidebarOpen }: HeaderProps) => {
               aria-expanded={sidebarOpen}
               onClick={handleToggleSidebar}
             >
-              <span className="sr-only">Open sidebar</span>
+              <span className="sr-only">Mở thanh bên</span>
               <Menu className="h-6 w-6" />
             </button>
           </div>

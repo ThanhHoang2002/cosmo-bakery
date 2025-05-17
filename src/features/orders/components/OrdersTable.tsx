@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatCurrency } from "@/utils/format";
 
 interface OrdersTableProps {
   orders: Order[];
@@ -47,34 +48,27 @@ export const OrdersTable = ({
   };
 
   // Format currency in USD (dollars)
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(amount);
-  };
 
   return (
     <div className="rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Order ID</TableHead>
-            <TableHead>Customer</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead >Total</TableHead>
-            <TableHead>Payment Method</TableHead>
-            <TableHead>Payment Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>ID</TableHead>
+            <TableHead>Khách hàng</TableHead>
+            <TableHead>Ngày tạo</TableHead>
+            <TableHead >Tổng tiền</TableHead>
+            <TableHead>Phương thức thanh toán</TableHead>
+            <TableHead>Trạng thái thanh toán</TableHead>
+            <TableHead>Trạng thái đơn hàng</TableHead>
+            <TableHead className="text-right">Hành động</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {orders.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="h-24 text-center">
-                {loading ? "Loading..." : "No orders found."}
+              <TableCell colSpan={8} className="h-24 text-center">
+                {loading ? "Đang tải..." : "Không có đơn hàng nào."}
               </TableCell>
             </TableRow>
           ) : (
@@ -97,6 +91,9 @@ export const OrdersTable = ({
                 <TableCell>
                   <OrderStatusBadge status={order.paymentStatus} type="payment" />
                 </TableCell>
+                <TableCell>
+                  <OrderStatusBadge status={order.orderStatus} type="order" />
+                </TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant="ghost"
@@ -105,7 +102,7 @@ export const OrdersTable = ({
                     className="h-8 w-8 p-0"
                     disabled={loading}
                   >
-                    <span className="sr-only">View details</span>
+                    <span className="sr-only">Xem chi tiết</span>
                     <Eye size={16} />
                   </Button>
                 </TableCell>

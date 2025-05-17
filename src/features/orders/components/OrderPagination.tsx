@@ -54,8 +54,8 @@ export const OrderPagination = ({
     <div className="mt-4 flex flex-col items-center justify-between gap-4 sm:flex-row">
       <div className="text-sm text-muted-foreground">
         {totalItems > 0
-          ? `Showing ${startItem}-${endItem} of ${totalItems} orders`
-          : "No orders found"}
+          ? `Hiển thị ${startItem}-${endItem} của ${totalItems} đơn hàng`
+          : "Không có đơn hàng nào"}
       </div>
       <div className="flex items-center gap-2">
         <Select 
@@ -82,7 +82,7 @@ export const OrderPagination = ({
             onClick={handleFirstPage}
             disabled={currentPage === 1 || loading || totalItems === 0}
           >
-            <span className="sr-only">First page</span>
+            <span className="sr-only">Trang đầu</span>
             <ChevronsLeft className="h-4 w-4" />
           </Button>
           <Button
@@ -92,7 +92,7 @@ export const OrderPagination = ({
             onClick={handlePreviousPage}
             disabled={currentPage === 1 || loading || totalItems === 0}
           >
-            <span className="sr-only">Previous page</span>
+            <span className="sr-only">Trang trước</span>
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <span className="mx-2 text-sm">
@@ -105,7 +105,7 @@ export const OrderPagination = ({
             onClick={handleNextPage}
             disabled={currentPage >= totalPages || loading || totalItems === 0}
           >
-            <span className="sr-only">Next page</span>
+            <span className="sr-only">Trang tiếp</span>
             <ChevronRight className="h-4 w-4" />
           </Button>
           <Button
@@ -115,7 +115,7 @@ export const OrderPagination = ({
             onClick={handleLastPage}
             disabled={currentPage >= totalPages || loading || totalItems === 0}
           >
-            <span className="sr-only">Last page</span>
+            <span className="sr-only">Trang cuối</span>
             <ChevronsRight className="h-4 w-4" />
           </Button>
         </div>

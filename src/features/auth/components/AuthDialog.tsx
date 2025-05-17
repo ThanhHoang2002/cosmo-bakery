@@ -108,11 +108,11 @@ export const AuthDialog = ({
       localStorage.setItem('accessToken', response.access_token);
       setIsOpen(false)
       setCurrentUser(response.user)
-      if(response.user.role.name.toLowerCase() === ROLES.ADMIN.toLocaleLowerCase()){
-        navigate('/admin')
-      }else{
-        navigate('/');
-      }
+      if(response.user.role.name.toLowerCase() !== ROLES.USER.toLocaleLowerCase()){
+          navigate('/admin')
+        }else{
+          navigate('/');
+        }
     } catch (error) {
       console.error("Login error:", error);
       toast({

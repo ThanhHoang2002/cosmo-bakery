@@ -4,49 +4,121 @@ import {
   Users,
   X,
   List,
-  ShoppingBag
+  ShoppingBag,
+  LucideIcon
 } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+
+import { logoBg } from '@/assets/images';
+import Image from '@/components/ui/image';
+import { ROLES } from '@/constant/role';
+import useAuthStore from '@/features/auth/stores/authStore';
 
 type SidebarProps = {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 };
 
+type NavItemProps = {
+  to: string;
+  icon: LucideIcon;
+  label: string;
+  isActive: boolean;
+  isActiveCondition: boolean;
+};
+
+type NavItem = {
+  to: string;
+  icon: LucideIcon;
+  label: string;
+  matchExact?: boolean;
+  adminOnly?: boolean;
+};
+
+const NavItem = ({ to, icon: Icon, label, isActive, isActiveCondition }: NavItemProps) => {
+  return (
+    <li className={`mb-0.5 rounded-sm px-3 py-2 ${isActiveCondition ? 'bg-primary/10' : ''}`}>
+      <NavLink
+        to={to}
+        className={`block truncate text-sm font-medium ${
+          isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+        }`}
+        aria-label={`Navigate to ${label}`}
+        tabIndex={0}
+      >
+        <div className="flex items-center">
+          <Icon className="h-5 w-5" />
+          <span className="ml-3">{label}</span>
+        </div>
+      </NavLink>
+    </li>
+  );
+};
+
 const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
   const { pathname } = location;
+  const { currentUser } = useAuthStore();
 
   const trigger = useRef<HTMLButtonElement>(null);
   const sidebar = useRef<HTMLDivElement>(null);
 
-  // Close on click outside
+  // Check if user is admin
+  const isAdmin = useMemo(() => {
+    return currentUser?.role?.name?.toUpperCase() === ROLES.ADMIN;
+  }, [currentUser]);
+
+  // Admin navigation items
+  const adminNavItems: NavItem[] = [
+    { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Trang chủ', matchExact: true, adminOnly: true },
+    { to: '/admin/products', icon: ShoppingBag, label: 'Sản phẩm' },
+    { to: '/admin/orders', icon: ShoppingBasket, label: 'Đơn hàng' },
+    { to: '/admin/customers', icon: Users, label: 'Người dùng', adminOnly: true },
+    { to: '/admin/categories', icon: List, label: 'Danh mục' },
+  ];
+
+  // Filter navigation items based on user role
+  const filteredNavItems = useMemo(() => {
+    return adminNavItems.filter(item => isAdmin || !item.adminOnly);
+  }, [adminNavItems, isAdmin]);
+
+  // Handle click outside sidebar
   useEffect(() => {
-    const clickHandler = ({ target }: MouseEvent) => {
+    const handleClickOutside = ({ target }: MouseEvent) => {
       if (!sidebar.current || !trigger.current) return;
       if (
         !sidebarOpen ||
         sidebar.current.contains(target as Node) ||
         trigger.current.contains(target as Node)
-      )
-        return;
+      ) return;
+      
       setSidebarOpen(false);
     };
-    document.addEventListener('click', clickHandler);
-    return () => document.removeEventListener('click', clickHandler);
-  });
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [sidebarOpen, setSidebarOpen]);
 
-  // Close if the esc key is pressed
+  // Handle escape key press
   useEffect(() => {
-    const keyHandler = ({ key }: KeyboardEvent) => {
+    const handleEscapeKey = ({ key }: KeyboardEvent) => {
       if (!sidebarOpen || key !== 'Escape') return;
       setSidebarOpen(false);
     };
-    document.addEventListener('keydown', keyHandler);
-    return () => document.removeEventListener('keydown', keyHandler);
-  });
+    
+    document.addEventListener('keydown', handleEscapeKey);
+    return () => document.removeEventListener('keydown', handleEscapeKey);
+  }, [sidebarOpen, setSidebarOpen]);
 
+  const handleToggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  // Check if a path is active
+  const isPathActive = (path: string, exact = false) => {
+    return exact ? pathname === path : pathname.includes(path);
+  };
 
   return (
     <div>
@@ -65,24 +137,33 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         className={`no-scrollbar absolute left-0 top-0 z-40 flex h-screen w-64 shrink-0 flex-col overflow-y-scroll bg-card duration-200 ease-in-out lg:static lg:left-auto lg:top-auto lg:translate-x-0 lg:overflow-y-auto ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-64'
         }`}
+        role="navigation"
+        aria-label="Main navigation"
       >
         {/* Sidebar header */}
         <div className="flex h-16 items-center justify-between pl-6 pr-3 md:h-20">
           {/* Logo */}
-          <NavLink to="/" className="block">
+          <NavLink 
+            to="/" 
+            className="flex  w-full items-center justify-center" 
+            aria-label="Go to homepage"
+            tabIndex={0}
+          >
             <div className="flex items-center">
-              <span className="ml-2 text-lg font-bold text-foreground">Hoang Tu Sport Admin</span>
+              <Image src={logoBg} alt="logo" containerClassName='w-20 h-20' />
             </div>
           </NavLink>
           {/* Close button (mobile only) */}
           <button
             ref={trigger}
             className="text-muted-foreground hover:text-foreground lg:hidden"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={handleToggleSidebar}
             aria-controls="sidebar"
             aria-expanded={sidebarOpen}
+            aria-label="Close sidebar"
+            tabIndex={0}
           >
-            <span className="sr-only">Close sidebar</span>
+            <span className="sr-only">Đóng</span>
             <X className="h-6 w-6" />
           </button>
         </div>
@@ -95,80 +176,19 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <span className="hidden w-6 text-center lg:block" aria-hidden="true">
                 •••
               </span>
-              <span className="lg:hidden">Pages</span>
+              <span className="lg:hidden">Trang</span>
             </h3>
-            <ul className="mt-3">
-              {/* Dashboard */}
-              <li className={`mb-0.5 rounded-sm px-3 py-2 ${pathname === '/admin/dashboard' && 'bg-primary/10'}`}>
-                <NavLink
-                  to="/admin/dashboard"
-                  className={`block truncate text-sm font-medium ${
-                    pathname === '/admin/dashboard' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <LayoutDashboard className="h-5 w-5" />
-                    <span className="ml-3">Dashboard</span>
-                  </div>
-                </NavLink>
-              </li>
-              {/* Products */}
-              <li className={`mb-0.5 rounded-sm px-3 py-2 ${pathname.includes('/admin/products') && 'bg-primary/10'}`}>
-                <NavLink
-                  to="/admin/products"
-                  className={`block truncate text-sm font-medium ${
-                    pathname.includes('/admin/products') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <ShoppingBag className="h-5 w-5" />
-                    <span className="ml-3">Products</span>
-                  </div>
-                </NavLink>
-              </li>
-              {/* Orders */}
-              <li className={`mb-0.5 rounded-sm px-3 py-2 ${pathname.includes('/admin/orders') && 'bg-primary/10'}`}>
-                <NavLink
-                  to="/admin/orders"
-                  className={`block truncate text-sm font-medium ${
-                    pathname.includes('/admin/orders') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <ShoppingBasket className="h-5 w-5" />
-                    <span className="ml-3">Orders</span>
-                  </div>
-                </NavLink>
-              </li>
-              {/* Customers */}
-              <li className={`mb-0.5 rounded-sm px-3 py-2 ${pathname.includes('/admin/customers') && 'bg-primary/10'}`}>
-                <NavLink
-                  to="/admin/customers"
-                  className={`block truncate text-sm font-medium ${
-                    pathname.includes('/admin/customers') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <Users className="h-5 w-5" />
-                    <span className="ml-3">Customers</span>
-                  </div>
-                </NavLink>
-              </li> 
-
-              {/* Categories */ }
-              <li className={`mb-0.5 rounded-sm px-3 py-2 ${pathname.includes('/admin/categories') && 'bg-primary/10'}`}>
-                <NavLink
-                  to="/admin/categories"
-                  className={`block truncate text-sm font-medium ${
-                    pathname.includes('/admin/categories') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <List className="h-5 w-5" />
-                    <span className="ml-3">Categories</span>
-                  </div>
-                </NavLink>
-              </li>
+            <ul className="mt-3" role="menu">
+              {filteredNavItems.map((item) => (
+                <NavItem
+                  key={item.to}
+                  to={item.to}
+                  icon={item.icon}
+                  label={item.label}
+                  isActive={isPathActive(item.to, item.matchExact)}
+                  isActiveCondition={isPathActive(item.to, item.matchExact)}
+                />
+              ))}
             </ul>
           </div>
           
@@ -178,24 +198,19 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <span className="hidden w-6 text-center lg:block" aria-hidden="true">
                 •••
               </span>
-              <span className="lg:hidden">Store</span>
+              <span className="lg:hidden">Cửa hàng</span>
             </h3>
-            <ul className="mt-3">
-              <li className="mb-0.5 rounded-sm px-3 py-2">
-                <NavLink
-                  to="/"
-                  className="block truncate text-sm font-medium text-muted-foreground hover:text-foreground"
-                >
-                  <div className="flex items-center">
-                    <ShoppingBasket className="h-5 w-5" />
-                    <span className="ml-3">View Store</span>
-                  </div>
-                </NavLink>
-              </li>
+            <ul className="mt-3" role="menu">
+              <NavItem
+                to="/"
+                icon={ShoppingBasket}
+                label="Xem cửa hàng"
+                isActive={false}
+                isActiveCondition={false}
+              />
             </ul>
           </div>
         </div>
-                  
       </div>
     </div>
   );

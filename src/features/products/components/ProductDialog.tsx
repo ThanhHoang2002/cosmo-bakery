@@ -158,14 +158,14 @@ const ProductDialog = ({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>
-            {isEditing ? "Edit Product" : "Add New Product"}
+            {isEditing ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm mới"}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
-                Name
+                Tên sản phẩm
               </Label>
               <Input
                 id="name"
@@ -179,7 +179,7 @@ const ProductDialog = ({
             
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="sellPrice" className="text-right">
-                Price ($)
+                Giá bán
               </Label>
               <Input
                 id="sellPrice"
@@ -196,7 +196,7 @@ const ProductDialog = ({
             
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="quantity" className="text-right">
-                Quantity
+                Số lượng
               </Label>
               <Input
                 id="quantity"
@@ -212,7 +212,7 @@ const ProductDialog = ({
             
             <div className="grid grid-cols-4 items-start gap-4">
               <Label htmlFor="description" className="pt-2 text-right">
-                Description (Markdown)
+                Mô tả (Markdown)
               </Label>
               <div className="col-span-3">
                 <Textarea
@@ -237,7 +237,7 @@ const ProductDialog = ({
             
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="category" className="text-right">
-                Category
+                Danh mục
               </Label>
               <Select
                 value={formData.categoryId?.toString()}
@@ -249,7 +249,7 @@ const ProductDialog = ({
                 <SelectContent>
                   {isCategoriesLoading ? (
                     <SelectItem value="loading" disabled>
-                      Loading categories...
+                      Đang tải danh mục...
                     </SelectItem>
                   ) : (
                     categories.map((category: Category) => (
@@ -264,7 +264,7 @@ const ProductDialog = ({
             
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="status" className="text-right">
-                Status
+                Trạng thái
               </Label>
               <Select
                 value={formData.status}
@@ -274,16 +274,17 @@ const ProductDialog = ({
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ACTIVE">Active</SelectItem>
-                  <SelectItem value="INACTIVE">Inactive</SelectItem>
-                  <SelectItem value="OUT_OF_STOCK">Out of Stock</SelectItem>
+                  <SelectItem value="ACTIVE">Hoạt động</SelectItem>
+                  <SelectItem value="INACTIVE">Không hoạt động</SelectItem>
+                  <SelectItem value="OUT_OF_STOCK">Hết hàng</SelectItem>
+                  <SelectItem value="COMING_SOON">Sắp ra mắt</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             
             <div className="grid grid-cols-4 items-start gap-4">
               <Label htmlFor="image" className="pt-2 text-right">
-                Product Image
+                Hình ảnh sản phẩm
               </Label>
               <div className="col-span-3">
                 <Input
@@ -307,7 +308,7 @@ const ProductDialog = ({
                 )}
                 {isEditing && !imageChanged && (
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Select a new image only if you want to change the current one.
+                    Chỉ chọn hình ảnh mới nếu muốn thay đổi hình ảnh hiện tại.
                   </p>
                 )}
               </div>
@@ -315,7 +316,7 @@ const ProductDialog = ({
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
-              Cancel
+              Hủy bỏ
             </Button>
             <Button 
               type="submit" 
@@ -324,10 +325,10 @@ const ProductDialog = ({
               {isSubmitting ? (
                 <>
                   <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-                  {isEditing ? "Updating..." : "Creating..."}
+                  {isEditing ? "Đang cập nhật..." : "Đang tạo..."}
                 </>
               ) : (
-                <>{isEditing ? "Update" : "Create"} Product</>
+                <>{isEditing ? "Cập nhật" : "Tạo"} sản phẩm</>
               )}
             </Button>
           </DialogFooter>

@@ -10,8 +10,8 @@ import { useCart } from '@/features/cart';
 
 const navigation = [
   { name: 'Trang chủ', href: '/' },
-  { name: 'Bánh ngọt và Bánh mỳ', href: '/products' },
-  { name: 'Bánh sinh nhật', href: '/categories/banh-sinh-nhat' },
+  { name: 'Sản phẩm', href: '/category/0' },
+  { name: 'Bánh sinh nhật', href: '/category/10' },
   { name: 'Giới thiệu', href: '/about' },
   { name: 'Liên hệ', href: '/contact' },
 ];

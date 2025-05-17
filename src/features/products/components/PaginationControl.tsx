@@ -80,7 +80,7 @@ const PaginationControl = ({
   return (
     <div className="mt-4 flex flex-col items-center justify-between gap-4 text-sm text-muted-foreground md:flex-row">
       <div className="flex items-center gap-2">
-        <span>Show</span>
+        <span>Hiển thị</span>
         <Select
           value={itemsPerPage.toString()}
           onValueChange={(value) => onItemsPerPageChange(Number(value))}
@@ -96,7 +96,7 @@ const PaginationControl = ({
             ))}
           </SelectContent>
         </Select>
-        <span>of {totalItems} products</span>
+        <span>{totalItems} sản phẩm</span>
       </div>
 
       <div className="flex items-center gap-1">

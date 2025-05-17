@@ -4,7 +4,6 @@ import GlobalLoading from '@/components/loading/GlobalLoading';
 import { ProductDetails } from '@/features/products/components/ProductDetails';
 import { ProductGrid } from '@/features/products/components/ProductGrid';
 import { useProductById, useProductsByCategory } from '@/features/products/hooks/useProducts';
-import { mappingCategoryName } from '@/utils/mappingCategoryName';
 
 export const ProductDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,14 +15,14 @@ export const ProductDetailsPage = () => {
     isError: isProductError 
   } = useProductById(id ? Number(id) : 0);
   
-  // Get related products by category only when product data is available
-  const categoryName = product?.category?.name;
+  // Lấy sản phẩm liên quan bằng categoryId khi product data có sẵn
+  const categoryId = product?.category?.id;
   const { 
     data: relatedProductsData, 
     isLoading: isRelatedLoading,
     isError: isRelatedError
   } = useProductsByCategory(
-    categoryName ?? '', 
+    categoryId || 0, // Sử dụng categoryId thay vì categoryName, mặc định là 0 nếu không có
     { size: 4 }
   );
   
@@ -60,7 +59,7 @@ export const ProductDetailsPage = () => {
           </li>
           <li className="flex items-center">
             <span className="mx-2 text-gray-400">/</span>
-            <Link to={`/category/${mappingCategoryName(product.category.name)}`} className="text-sm text-gray-500 hover:text-gray-700">
+            <Link to={`/category/${product.category.id}`} className="text-sm text-gray-500 hover:text-gray-700">
               {product.category.name}
             </Link>
           </li>

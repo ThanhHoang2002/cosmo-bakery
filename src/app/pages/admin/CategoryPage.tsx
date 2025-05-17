@@ -91,21 +91,21 @@ const CategoryTableRow = memo(({
               size="sm"
               className="h-8 w-8 p-0"
             >
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Mở menu</span>
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => onEditClick(category)}>
               <Pencil className="mr-2 h-4 w-4" />
-              Edit category
+              Sửa danh mục
             </DropdownMenuItem>
             <DropdownMenuItem 
               onClick={() => onDeleteClick(category)}
               className="text-destructive focus:bg-destructive focus:text-destructive-foreground"
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              Delete category
+              Xóa danh mục
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -170,15 +170,15 @@ const DeleteDialog = memo(({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-destructive">
             <AlertTriangle className="h-5 w-5" />
-            Confirm Deletion
+            Xác nhận xóa
           </DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete category <strong>{categoryName}</strong>? This action cannot be undone.
+            Bạn có chắc chắn muốn xóa danh mục <strong>{categoryName}</strong>? Hành động này không thể hoàn tác.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={isDeleting}>
-            Cancel
+            Hủy bỏ
           </Button>
           <Button 
             variant="destructive" 
@@ -188,10 +188,10 @@ const DeleteDialog = memo(({
             {isDeleting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Deleting...
+                Đang xóa...
               </>
             ) : (
-              'Delete'
+              'Xóa'
             )}
           </Button>
         </DialogFooter>
@@ -219,7 +219,7 @@ const PaginationControls = memo(({
   return (
     <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
       <div>
-        Showing {(currentPage - 1) * pageSize + 1}-{Math.min(currentPage * pageSize, totalItems)} of {totalItems} categories
+        Hiển thị {(currentPage - 1) * pageSize + 1}-{Math.min(currentPage * pageSize, totalItems)} của {totalItems} danh mục
       </div>
       <div className="flex items-center gap-1">
         <Button
@@ -370,10 +370,10 @@ const CategoryPage = () => {
       transition={{ duration: 0.5 }}
     >
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Category Management</h1>
+        <h1 className="text-2xl font-bold">Quản lý danh mục</h1>
         <Button onClick={handleAddNewClick} className="flex items-center gap-1">
           <Plus className="h-4 w-4" />
-          Add Category
+          Thêm danh mục
         </Button>
       </div>
       
@@ -390,46 +390,46 @@ const CategoryPage = () => {
             <TableRow>
               <SortableHeader 
                 column="name" 
-                label="Category" 
+                label="Danh mục" 
                 sortBy={filters.sortBy} 
                 sortOrder={filters.sortOrder} 
                 onToggleSort={toggleSort} 
               />
               <SortableHeader 
                 column="description" 
-                label="Description" 
+                label="Mô tả" 
                 sortBy={filters.sortBy} 
                 sortOrder={filters.sortOrder} 
                 onToggleSort={toggleSort} 
               />
               <SortableHeader 
                 column="createdAt" 
-                label="Created" 
+                label="Ngày tạo" 
                 sortBy={filters.sortBy} 
                 sortOrder={filters.sortOrder} 
                 onToggleSort={toggleSort} 
               />
               <SortableHeader 
                 column="createdBy" 
-                label="Created By" 
+                label="Người tạo" 
                 sortBy={filters.sortBy} 
                 sortOrder={filters.sortOrder} 
                 onToggleSort={toggleSort} 
               />
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  Loading categories...
+                  Đang tải danh mục...
                 </TableCell>
               </TableRow>
             ) : categories.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  No categories found.
+                  Không có danh mục nào.
                 </TableCell>
               </TableRow>
             ) : (

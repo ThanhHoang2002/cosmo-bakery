@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { RecentOrder } from '../types';
 
 import { Card } from '@/components/ui/card';
-import { OrderStatus, PaymentMethod } from '@/features/orders/types';
+import { ORDER_STATUS_VI, OrderStatus, PAYMENT_METHOD_VI, PaymentMethod } from '@/features/orders/types';
 import { formatCurrency } from '@/utils/format';
 
 interface RecentOrdersProps {
@@ -23,7 +23,7 @@ const StatusBadgeColors: Record<OrderStatus, string> = {
 const OrderStatusBadge = memo(({ status }: { status: OrderStatus }) => {
   return (
     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${StatusBadgeColors[status]}`}>
-      {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
+      {ORDER_STATUS_VI[status]}
     </span>
   );
 });
@@ -37,7 +37,7 @@ const PaymentMethodBadges = memo(({ method }: { method: PaymentMethod }) => {
 
   return (
     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${methodColors[method]}`}>
-      {method}
+      {PAYMENT_METHOD_VI[method]}
     </span>
   );
 }
@@ -56,9 +56,9 @@ const RecentOrders = memo(({ orders }: RecentOrdersProps) => {
   return (
     <Card className="p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="font-bold">Recent Orders</h2>
+        <h2 className="font-bold">Đơn hàng gần đây</h2>
         <Link to="/admin/orders" className="text-sm text-primary hover:underline">
-          View all
+          Xem tất cả
         </Link>
       </div>
       <div className="overflow-x-auto">
@@ -66,12 +66,12 @@ const RecentOrders = memo(({ orders }: RecentOrdersProps) => {
           <table className="w-full">
             <thead>
               <tr className="border-b border-border text-left text-sm font-medium text-muted-foreground">
-                <th className="pb-3 pr-4">Order ID</th>
-                <th className="pb-3 pr-4">Customer</th>
-                <th className="pb-3 pr-4">Date</th>
-                <th className="pb-3 pr-4">Amount</th>
-                <th className="pb-3 pr-4">Payment</th>
-                <th className="pb-3 pr-4">Status</th>
+                <th className="pb-3 pr-4">Mã đơn hàng</th>
+                <th className="pb-3 pr-4">Khách hàng</th>
+                <th className="pb-3 pr-4">Ngày</th>
+                <th className="pb-3 pr-4">Số tiền</th>
+                <th className="pb-3 pr-4">Phương thức thanh toán</th>
+                <th className="pb-3 pr-4">Trạng thái</th>
               </tr>
             </thead>
             <tbody>
@@ -106,7 +106,7 @@ const RecentOrders = memo(({ orders }: RecentOrdersProps) => {
           </table>
         ) : (
           <div className="flex h-32 items-center justify-center">
-            <p className="text-muted-foreground">No orders available</p>
+            <p className="text-muted-foreground">Không có đơn hàng</p>
           </div>
         )}
       </div>

@@ -20,7 +20,7 @@ export const CategoryToolbar = ({ onSearch }: CategoryToolbarProps) => {
         <div className="relative w-full">
           <Input
             type="text"
-            placeholder="Search..."
+            placeholder="Tìm kiếm..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="h-9 w-full pr-8"

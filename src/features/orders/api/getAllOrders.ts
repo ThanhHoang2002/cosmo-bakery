@@ -24,10 +24,10 @@ export const getAllOrders = async (
     "/orders",
     {
       params: {
-        page: params.page != null ? params.page : 0,
+        page: params.page != null ? params.page : 1,
         size: params.size || 10,
         filter: filter.toString() === "()" ? undefined : filter.toString(),
-        sortBy: params.sortBy || "createdAt",
+        sortBy: params.sortBy || "id",
         sortDirection: params.sortDirection || "desc",
       },
     }

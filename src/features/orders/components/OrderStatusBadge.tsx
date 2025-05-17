@@ -22,49 +22,46 @@ export const OrderStatusBadge = ({
   if (type === "order") {
     switch (safeStatus as OrderStatus) {
       case "PENDING":
-        statusText = "Pending";
+        statusText = "Chờ xác nhận";
         statusClass = "bg-yellow-100 text-yellow-800";
         break;
       case "PROCESSING":
-        statusText = "Processing";
+        statusText = "Đang xử lý";
         statusClass = "bg-blue-100 text-blue-800";
         break;
-      case "COMPLETED":
-        statusText = "Completed";
-        statusClass = "bg-green-100 text-green-800";
         break;
       case "DELIVERED":
-        statusText = "Delivered";
+        statusText = "Đã giao hàng";
         statusClass = "bg-indigo-100 text-indigo-800";
         break;
       case "CANCELLED":
-        statusText = "Cancelled";
+        statusText = "Đã hủy";
         statusClass = "bg-red-100 text-red-800";
         break;
       default:
-        statusText = "Unknown";
+        statusText = "Không xác định";
         statusClass = "bg-gray-100 text-gray-800";
     }
   } else {
     switch (safeStatus as PaymentStatus) {
       case "PENDING":
-        statusText = "Pending";
+        statusText = "Chờ thanh toán";
         statusClass = "bg-yellow-100 text-yellow-800";
         break;
       case "PAID":
-        statusText = "Paid";
+        statusText = "Đã thanh toán";
         statusClass = "bg-green-100 text-green-800";
         break;
       case "FAILED":
-        statusText = "Failed";
+        statusText = "Thất bại";
         statusClass = "bg-red-100 text-red-800";
         break;
       case "REFUNDED":
-        statusText = "Refunded";
+        statusText = "Đã hoàn lại";
         statusClass = "bg-purple-100 text-purple-800";
         break;
       default:
-        statusText = "Unknown";
+        statusText = "Không xác định";
         statusClass = "bg-gray-100 text-gray-800";
     }
   }

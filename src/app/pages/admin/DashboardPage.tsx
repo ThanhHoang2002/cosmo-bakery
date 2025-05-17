@@ -6,7 +6,8 @@ import {
   StatCard,
   TopProducts,
   RecentOrders,
-  PeriodFilter
+  PeriodFilter,
+  SalesBySupplier
 } from '@/features/dashboard/components';
 import { useDashboard } from '@/features/dashboard/hooks/useDashboard';
 import { formatCurrency } from '@/utils/format';
@@ -28,9 +29,12 @@ const DashboardPage = () => {
     stats,
     topProducts,
     recentOrders,
+    supplierRevenue,
     period,
     handlePeriodChange,
     isLoading,
+    isSupplierRevenueLoading,
+    isSupplierRevenueError
   } = useDashboard('month');
 
   // Memoize period label để tránh tính toán lại không cần thiết
@@ -54,7 +58,7 @@ const DashboardPage = () => {
         transition={{ duration: 0.5 }}
       >
         <div className="mb-4 sm:mb-0">
-          <h1 className="text-2xl font-bold md:text-3xl">Bakery Dashboard</h1>
+          <h1 className="text-2xl font-bold md:text-3xl">Trang chủ</h1>
         </div>
         <div className="grid grid-flow-col gap-2">
           <PeriodFilter
@@ -67,7 +71,7 @@ const DashboardPage = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          title="Total Revenue"
+          title="Tổng doanh thu"
           value={formatCurrency(stats.revenue.currentValue)}
           previousValue={formatCurrency(stats.revenue.previousValue)}
           icon={DollarSign}
@@ -75,7 +79,7 @@ const DashboardPage = () => {
           progressPercentage={progressPercentages.revenue}
         />
         <StatCard
-          title="Total Orders"
+          title="Tổng đơn hàng"
           value={stats.orders.currentValue}
           previousValue={stats.orders.previousValue}
           icon={ShoppingBasket}
@@ -83,7 +87,7 @@ const DashboardPage = () => {
           progressPercentage={progressPercentages.orders}
         />
         <StatCard
-          title="Products Sold"
+          title="Sản phẩm đã bán"
           value={stats.productsSold.currentValue}
           previousValue={stats.productsSold.previousValue}
           icon={CakeSlice}
@@ -91,7 +95,7 @@ const DashboardPage = () => {
           progressPercentage={progressPercentages.products}
         />
         <StatCard
-          title="New Customers"
+          title="Khách hàng mới"
           value={stats.customers.currentValue}
           previousValue={stats.customers.previousValue}
           icon={Users}
@@ -101,8 +105,15 @@ const DashboardPage = () => {
       </div>
 
       {/* Charts */}
-      <div className="mt-8">
+      <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
         <TopProducts products={topProducts} />
+        <SalesBySupplier 
+          period={periodLabel} 
+          periodValue={period}
+          supplierRevenue={supplierRevenue}
+          isLoading={isSupplierRevenueLoading}
+          isError={isSupplierRevenueError}
+        />
       </div>
 
       {/* Recent Orders */}

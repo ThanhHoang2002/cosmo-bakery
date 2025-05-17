@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { PRODUCT_STATUS_VI } from '@/constant/product-status';
 import { useCategories } from '@/features/categories/hooks/useCategories';
 import { Category } from '@/features/categories/types';
 import ConfirmDeleteDialog from '@/features/products/components/ConfirmDeleteDialog';
@@ -66,9 +67,9 @@ const ProductPage = () => {
 
   // Format currency
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'VND',
     }).format(value);
   };
 
@@ -87,6 +88,8 @@ const ProductPage = () => {
         return 'bg-gray-100 text-gray-800 border-gray-200';
       case 'OUT_OF_STOCK':
         return 'bg-red-100 text-red-800 border-red-200';
+      case 'COMING_SOON':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -160,10 +163,10 @@ const ProductPage = () => {
           }
         >
           <SelectTrigger>
-            <SelectValue placeholder="All categories" />
+            <SelectValue placeholder="Tất cả danh mục" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All categories</SelectItem>
+            <SelectItem value="all">Tất cả danh mục</SelectItem>
             {categories.map((category: Category) => (
               <SelectItem key={category.id} value={category.name}>
                 {category.name}
@@ -180,13 +183,14 @@ const ProductPage = () => {
           }
         >
           <SelectTrigger>
-            <SelectValue placeholder="All statuses" />
+            <SelectValue placeholder="Tất cả trạng thái" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            <SelectItem value="ACTIVE">Active</SelectItem>
-            <SelectItem value="INACTIVE">Inactive</SelectItem>
-            <SelectItem value="OUT_OF_STOCK">Out of Stock</SelectItem>
+            <SelectItem value="all">Tất cả trạng thái</SelectItem>
+            <SelectItem value="ACTIVE">Hoạt động</SelectItem>
+            <SelectItem value="INACTIVE">Không hoạt động</SelectItem>
+            <SelectItem value="OUT_OF_STOCK">Hết hàng</SelectItem>
+            <SelectItem value="COMING_SOON">Sắp ra mắt</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -197,7 +201,7 @@ const ProductPage = () => {
           <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
           <Input
             type="number"
-            placeholder="Min price"
+            placeholder="Giá min"
             value={filters.minPrice || ""}
             onChange={(e) => {
               const value = e.target.value ? Number(e.target.value) : undefined;
@@ -209,7 +213,7 @@ const ProductPage = () => {
           <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
           <Input
             type="number"
-            placeholder="Max price"
+            placeholder="Giá max"
             value={filters.maxPrice || ""}
             onChange={(e) => {
               const value = e.target.value ? Number(e.target.value) : undefined;
@@ -238,7 +242,7 @@ const ProductPage = () => {
                 currentSortDirection={sortDirection}
                 onSort={handleSortChange}
               >
-                Name
+                Tên sản phẩm
               </SortableHeader>
               <SortableHeader
                 field="sellPrice"
@@ -246,7 +250,7 @@ const ProductPage = () => {
                 currentSortDirection={sortDirection}
                 onSort={handleSortChange}
               >
-                Price
+                Giá bán
               </SortableHeader>
               <SortableHeader
                 field="quantity"
@@ -254,11 +258,11 @@ const ProductPage = () => {
                 currentSortDirection={sortDirection}
                 onSort={handleSortChange}
               >
-                Stock
+                Tồn kho
               </SortableHeader>
-              <TableHead>Category</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>Danh mục</TableHead>
+              <TableHead>Trạng thái</TableHead>
+              <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -267,7 +271,7 @@ const ProductPage = () => {
                 <TableCell colSpan={7} className="text-center">
                   <div className="flex items-center justify-center py-4">
                     <div className="mr-2 h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-                    <span>Loading products...</span>
+                    <span>Đang tải sản phẩm...</span>
                   </div>
                 </TableCell>
               </TableRow>
@@ -275,8 +279,8 @@ const ProductPage = () => {
               <TableRow>
                 <TableCell colSpan={7} className="text-center text-red-500">
                   <div className="py-4">
-                    <p className="font-medium">Error loading products</p>
-                    <p className="mt-1 text-sm">Please try again or contact support if the problem persists.</p>
+                    <p className="font-medium">Lỗi tải sản phẩm</p>
+                    <p className="mt-1 text-sm">Vui lòng thử lại hoặc liên hệ hỗ trợ nếu vấn đề vẫn tiếp tục.</p>
                   </div>
                 </TableCell>
               </TableRow>
@@ -284,9 +288,9 @@ const ProductPage = () => {
               <TableRow>
                 <TableCell colSpan={7} className="text-center">
                   <div className="py-8">
-                    <p className="text-muted-foreground">No products found</p>
+                    <p className="text-muted-foreground">Không tìm thấy sản phẩm</p>
                     {filters.search || filters.categoryName || filters.status || filters.minPrice || filters.maxPrice ? (
-                      <p className="mt-2 text-sm text-muted-foreground">Try adjusting your filters</p>
+                      <p className="mt-2 text-sm text-muted-foreground">Vui lòng điều chỉnh các bộ lọc</p>
                     ) : (
                       <Button 
                         onClick={handleAddProduct} 
@@ -294,7 +298,7 @@ const ProductPage = () => {
                         className="mt-4"
                       >
                         <Plus className="mr-2 h-4 w-4" />
-                        Add product
+                        Thêm sản phẩm
                       </Button>
                     )}
                   </div>
@@ -328,13 +332,7 @@ const ProductPage = () => {
                         product.status
                       )}`}
                     >
-                      {product.status === 'ACTIVE'
-                        ? 'Active'
-                        : product.status === 'INACTIVE'
-                        ? 'Inactive'
-                        : product.status === 'OUT_OF_STOCK'
-                        ? 'Out of Stock'
-                        : product.status}
+                      {PRODUCT_STATUS_VI[product.status]}
                     </span>
                   </TableCell>
                   <TableCell className="text-right">

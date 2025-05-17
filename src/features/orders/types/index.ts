@@ -2,6 +2,26 @@ export type PaymentMethod = 'COD' | 'TRANSFER' | 'CREDIT_CARD';
 export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
 export type OrderStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
 
+export const ORDER_STATUS_VI = {
+  PENDING: 'Chờ xác nhận',
+  PROCESSING: 'Đang xử lý',
+  SHIPPED: 'Đang giao hàng',
+  DELIVERED: 'Đã giao hàng',
+  CANCELLED: 'Đã hủy',
+};
+export const PAYMENT_STATUS_VI = {
+  PENDING: 'Chờ thanh toán',
+  PAID: 'Đã thanh toán',
+  FAILED: 'Thanh toán thất bại',
+  REFUNDED: 'Đã hoàn tiền',
+};
+export const PAYMENT_METHOD_VI = {
+  COD: 'Thanh toán khi nhận hàng',
+  TRANSFER: 'Chuyển khoản',
+  CREDIT_CARD: 'Thẻ tín dụng',
+};
+
+
 export interface User {
   id: number;
   name: string;
@@ -21,6 +41,7 @@ export interface Order {
   totalPrice: number;
   paymentMethod: PaymentMethod;
   paymentStatus: PaymentStatus;
+  orderStatus: OrderStatus;
   paymentUrl: string | null;
   transactionNo: string | null;
   paymentMessage: string;
@@ -31,7 +52,7 @@ export interface Order {
   user: User;
   phone: string;
   address: string;
-  items?: OrderItem[];
+  orderDetails?: OrderItem[];
 }
 
 export interface OrderItem {
@@ -61,6 +82,7 @@ export interface OrderFilterParams {
   search?: string;
   paymentStatus?: PaymentStatus;
   paymentMethod?: PaymentMethod;
+  orderStatus?: OrderStatus;
   sortBy?: string;
   sortDirection?: 'asc' | 'desc';
   fromDate?: string;

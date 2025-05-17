@@ -40,7 +40,7 @@ const StatCard = memo(({ title, value, previousValue, icon: Icon, growthRate, pr
         <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
         <p className="mt-2 text-3xl font-bold">{value}</p>
         {previousValue !== undefined && (
-          <p className="mt-1 text-xs text-muted-foreground">Previous: {previousValue}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Trước: {previousValue}</p>
         )}
       </div>
       <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-muted">

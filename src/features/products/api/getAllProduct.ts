@@ -8,7 +8,7 @@ export interface ProductsParams {
   page?: number;
   size?: number;
   search?: string;
-  categoryName?: string;
+  categoryId?: number;
   status?: string;
   sortBy?: string;
   sortDirection?: string;
@@ -21,7 +21,7 @@ export const getAllProduct = async (
   const filter = sfAnd(
     [
       params.search && sfLike("name", params.search),
-      params.categoryName && sfEqual("category.name", params.categoryName),
+      params.categoryId && sfEqual("category.id", params.categoryId),
       params.status && sfEqual("status", params.status),
       params.minPrice && sfGe("sellPrice", params.minPrice),
       params.maxPrice && sfLe("sellPrice", params.maxPrice),
@@ -29,17 +29,29 @@ export const getAllProduct = async (
     ].filter(Boolean) as Item[]
   );
   
-const response = await axiosPublic.get<ApiResponse<DetailResponse<Product[]>>>(
+  // API cũng bắt đầu từ trang 1, nên không cần chuyển đổi
+  // Chỉ đảm bảo page có giá trị hợp lệ (>=1) hoặc mặc định là 1
+  const apiPage = params.page !== undefined ? Math.max(1, params.page) : 1;
+  
+  console.log('API call with params:', {
+    page: apiPage,
+    categoryId: params.categoryId,
+    filters: filter.toString()
+  });
+  
+  const response = await axiosPublic.get<ApiResponse<DetailResponse<Product[]>>>(
     "/products",
     {
       params: {
-        page: params.page,
-        size: params.size,
+        page: apiPage,
+        size: params.size || 15,
         filter: filter.toString()==="()"?undefined:filter.toString(),
         sortBy: params.sortBy,
-        sortDirection: params.sortDirection,
+        sortDirection: params.sortDirection?.toUpperCase(),
       },
     }
   );
+  
+  // Không cần điều chỉnh page trong kết quả vì cả UI và API đều sử dụng 1-based
   return response.data.data;
 };

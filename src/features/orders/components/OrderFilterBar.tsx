@@ -51,38 +51,38 @@ export const OrderFilterBar = ({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {/* Payment Status Filter */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Payment Status</label>
+              <label className="text-sm font-medium">Trạng thái thanh toán</label>
               <Select 
                 value={filters.paymentStatus || "all"} 
                 onValueChange={handlePaymentStatusChange}
               >
                 <SelectTrigger disabled={loading}>
-                  <SelectValue placeholder="All payment statuses" />
+                  <SelectValue placeholder="Tất cả trạng thái thanh toán" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All payment statuses</SelectItem>
+                  <SelectItem value="all">Tất cả trạng thái thanh toán</SelectItem>
                   <SelectItem value="PENDING">
                     <div className="flex items-center gap-2">
                       <span className="h-2 w-2 rounded-full bg-yellow-500"></span>
-                      Pending
+                      Chờ thanh toán
                     </div>
                   </SelectItem>
                   <SelectItem value="PAID">
                     <div className="flex items-center gap-2">
                       <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                      Paid
+                      Đã thanh toán
                     </div>
                   </SelectItem>
                   <SelectItem value="FAILED">
                     <div className="flex items-center gap-2">
                       <span className="h-2 w-2 rounded-full bg-red-500"></span>
-                      Failed
+                      Thất bại
                     </div>
                   </SelectItem>
                   <SelectItem value="REFUNDED">
                     <div className="flex items-center gap-2">
                       <span className="h-2 w-2 rounded-full bg-purple-500"></span>
-                      Refunded
+                      Đã hoàn lại
                     </div>
                   </SelectItem>
                 </SelectContent>
@@ -98,25 +98,25 @@ export const OrderFilterBar = ({
 
             {/* Payment Method Filter */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Payment Method</label>
+              <label className="text-sm font-medium">Phương thức thanh toán</label>
               <Select 
                 value={filters.paymentMethod || "all"} 
                 onValueChange={handlePaymentMethodChange}
               >
                 <SelectTrigger disabled={loading}>
-                  <SelectValue placeholder="All payment methods" />
+                  <SelectValue placeholder="Tất cả phương thức thanh toán" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All payment methods</SelectItem>
-                  <SelectItem value="COD">Cash on Delivery (COD)</SelectItem>
-                  <SelectItem value="TRANSFER">Bank Transfer</SelectItem>
-                  <SelectItem value="CREDIT_CARD">Credit Card</SelectItem>
+                  <SelectItem value="all">Tất cả phương thức thanh toán</SelectItem>
+                  <SelectItem value="COD">Thanh toán tiền mặt (COD)</SelectItem>
+                  <SelectItem value="TRANSFER">Chuyển khoản</SelectItem>
+                  <SelectItem value="CREDIT_CARD">Thẻ tín dụng</SelectItem>
                 </SelectContent>
               </Select>
               {filters.paymentMethod && (
                 <div className="mt-1">
                   <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-xs">
-                    Method: {filters.paymentMethod}
+                    Phương thức: {filters.paymentMethod}
                   </span>
                 </div>
               )}

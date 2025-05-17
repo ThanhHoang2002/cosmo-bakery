@@ -15,9 +15,9 @@ const TopProducts = memo(({ products }: TopProductsProps) => {
   return (
     <Card className="p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="font-bold">Top Selling Products</h2>
+        <h2 className="font-bold">Sản phẩm bán chạy nhất</h2>
         <Link to="/admin/products" className="text-sm text-primary hover:underline">
-          View all
+          Xem tất cả
         </Link>
       </div>
       <div className="h-64 overflow-hidden">
@@ -45,7 +45,7 @@ const TopProducts = memo(({ products }: TopProductsProps) => {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-medium">{product.totalQuantitySold} sold</p>
+                  <p className="font-medium">{product.totalQuantitySold} đã bán</p>
                   <p className="text-sm text-muted-foreground">
                     {formatCurrency(product.totalRevenue)}
                   </p>
@@ -55,7 +55,7 @@ const TopProducts = memo(({ products }: TopProductsProps) => {
           </ul>
         ) : (
           <div className="flex h-full items-center justify-center">
-            <p className="text-muted-foreground">No data available</p>
+            <p className="text-muted-foreground">Không có dữ liệu</p>
           </div>
         )}
       </div>

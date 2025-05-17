@@ -14,10 +14,18 @@ const OrderPage = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
 
-  const { orders, meta, loading, filters, updateFilters, updatePaymentStatus } = useOrders({
+  const { 
+    orders, 
+    meta, 
+    loading, 
+    filters, 
+    updateFilters, 
+    updatePaymentStatus,
+    updateOrderStatus 
+  } = useOrders({
     page: 1,
     size: 10,
-    sortBy: "createdAt",
+    sortBy: "id",
     sortDirection: "desc",
   });
 
@@ -51,8 +59,8 @@ const OrderPage = () => {
       transition={{ duration: 0.3 }}
     >
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">Order Management</h1>
-        <p className="text-muted-foreground">Manage and track all orders</p>
+        <h1 className="text-2xl font-bold">Quản lý đơn hàng</h1>
+        <p className="text-muted-foreground">Quản lý và theo dõi tất cả đơn hàng</p>
       </div>
 
       <OrderFilterBar
@@ -81,6 +89,7 @@ const OrderPage = () => {
         onClose={handleCloseOrderDialog}
         order={selectedOrder}
         onUpdatePaymentStatus={updatePaymentStatus}
+        onUpdateOrderStatus={updateOrderStatus}
         loading={loading}
       />
     </motion.div>

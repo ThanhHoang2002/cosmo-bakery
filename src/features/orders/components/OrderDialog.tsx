@@ -1,7 +1,7 @@
 import { Clock, CreditCard, MapPin, Package, Phone, ShoppingBag, User } from "lucide-react";
 import { useState } from "react";
 
-import { Order, PaymentStatus } from "../types";
+import { Order, OrderStatus, PaymentStatus } from "../types";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 import { PaymentMethodBadge } from "./PaymentMethodBadge";
 
@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { formatCurrency } from "@/utils/format";
 
 interface CardProps {
   children: React.ReactNode;
@@ -70,6 +71,7 @@ interface OrderDialogProps {
   onClose: () => void;
   order: Order | null;
   onUpdatePaymentStatus?: (id: number, status: PaymentStatus) => Promise<Order | null>;
+  onUpdateOrderStatus?: (id: number, status: OrderStatus) => Promise<Order | null>;
   loading?: boolean;
 }
 
@@ -78,9 +80,11 @@ export const OrderDialog = ({
   onClose, 
   order, 
   onUpdatePaymentStatus,
+  onUpdateOrderStatus,
   loading = false 
 }: OrderDialogProps) => {
   const [newPaymentStatus, setNewPaymentStatus] = useState<PaymentStatus | "">("");
+  const [newOrderStatus, setNewOrderStatus] = useState<OrderStatus | "">("");
 
   // Format date to readable format
   const formatDate = (dateString: string) => {
@@ -95,20 +99,19 @@ export const OrderDialog = ({
     }).format(date);
   };
 
-  // Format currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(amount);
-  };
+ 
 
   const handleUpdatePaymentStatus = async () => {
     if (onUpdatePaymentStatus && newPaymentStatus && order) {
       await onUpdatePaymentStatus(order.id, newPaymentStatus as PaymentStatus);
       setNewPaymentStatus("");
+    }
+  };
+
+  const handleUpdateOrderStatus = async () => {
+    if (onUpdateOrderStatus && newOrderStatus && order) {
+      await onUpdateOrderStatus(order.id, newOrderStatus as OrderStatus);
+      setNewOrderStatus("");
     }
   };
 
@@ -120,10 +123,11 @@ export const OrderDialog = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-bold">
             <ShoppingBag className="h-5 w-5" />
-            Order #{order.id}
+            Đơn hàng #{order.id}
           </DialogTitle>
           <div className="flex flex-wrap gap-2 pt-2">
             <OrderStatusBadge status={order.paymentStatus} type="payment" />
+            <OrderStatusBadge status={order.orderStatus} type="order" />
           </div>
         </DialogHeader>
 
@@ -135,26 +139,30 @@ export const OrderDialog = ({
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Package className="h-4 w-4" />
-                  Order Summary
+                  Tóm tắt đơn hàng
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <div className="text-sm text-muted-foreground">Date Placed</div>
+                    <div className="text-sm text-muted-foreground">Ngày đặt hàng</div>
                     <div className="font-medium">{formatDate(order.createdAt)}</div>
                   </div>
                   <div>
-                    <div className="text-sm text-muted-foreground">Payment Method</div>
+                    <div className="text-sm text-muted-foreground">Phương thức thanh toán</div>
                     <div><PaymentMethodBadge method={order.paymentMethod} /></div>
                   </div>
-                  <div className="col-span-2">
-                    <div className="text-sm text-muted-foreground">Payment Status</div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Trạng thái thanh toán</div>
                     <div><OrderStatusBadge status={order.paymentStatus} type="payment" /></div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground">Trạng thái đơn hàng</div>
+                    <div><OrderStatusBadge status={order.orderStatus} type="order" /></div>
                   </div>
                   {order.transactionNo && (
                     <div className="col-span-2">
-                      <div className="text-sm text-muted-foreground">Transaction ID</div>
+                      <div className="text-sm text-muted-foreground">Mã giao dịch</div>
                       <div className="font-mono text-sm">{order.transactionNo}</div>
                     </div>
                   )}
@@ -162,7 +170,7 @@ export const OrderDialog = ({
 
                 {order.paymentMessage && (
                   <div className="mt-4 rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-blue-800">
-                    <p className="font-medium">Payment Details</p>
+                    <p className="font-medium">Chi tiết thanh toán</p>
                     <p className="mt-1">{order.paymentMessage}</p>
                   </div>
                 )}
@@ -174,7 +182,7 @@ export const OrderDialog = ({
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <ShoppingBag className="h-4 w-4" />
-                  Items
+                  Sản phẩm
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -182,13 +190,13 @@ export const OrderDialog = ({
                   <table className="w-full">
                     <thead className="bg-muted/50 text-xs font-medium text-muted-foreground">
                       <tr>
-                        <th className="px-4 py-2.5 text-left">Product</th>
-                        <th className="w-20 px-4 py-2.5 text-center">Qty</th>
-                        <th className="w-28 px-4 py-2.5 text-right">Subtotal</th>
+                        <th className="px-4 py-2.5 text-left">Sản phẩm</th>
+                        <th className="w-20 px-4 py-2.5 text-center">Số lượng</th>
+                        <th className="w-28 px-4 py-2.5 text-right">Tổng tiền</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y">
-                      {order.items && order.items.map((item) => (
+                      {order.orderDetails && order.orderDetails.map((item) => (
                         <tr key={item.id} className="hover:bg-muted/30">
                           <td className="px-4 py-2.5">
                             <div className="flex items-center gap-2">
@@ -213,7 +221,7 @@ export const OrderDialog = ({
                     </tbody>
                     <tfoot className="bg-muted/50 font-medium">
                       <tr>
-                        <td colSpan={2} className="px-4 py-2.5 text-left">Order Total</td>
+                        <td colSpan={2} className="px-4 py-2.5 text-left">Tổng đơn hàng</td>
                         <td className="px-4 py-2.5 text-right">{formatCurrency(order.totalPrice)}</td>
                       </tr>
                     </tfoot>
@@ -222,42 +230,73 @@ export const OrderDialog = ({
               </CardContent>
             </Card>
 
-            {/* Payment Status Updates */}
-            {onUpdatePaymentStatus && (
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Clock className="h-4 w-4" />
-                    Update Payment Status
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-medium">Payment Status</h4>
-                    <div className="flex items-center gap-2">
-                      <Select value={newPaymentStatus} onValueChange={(value) => setNewPaymentStatus(value as PaymentStatus)}>
-                        <SelectTrigger className="flex-1">
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="PENDING">Pending</SelectItem>
-                          <SelectItem value="PAID">Paid</SelectItem>
-                          <SelectItem value="FAILED">Failed</SelectItem>
-                          <SelectItem value="REFUNDED">Refunded</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Button 
-                        disabled={!newPaymentStatus || loading} 
-                        onClick={handleUpdatePaymentStatus}
-                        size="sm"
-                      >
-                        Update
-                      </Button>
+            {/* Status Updates */}
+            {(onUpdatePaymentStatus || onUpdateOrderStatus) && <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Clock className="h-4 w-4" />
+                  Cập nhật trạng thái
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {/* Payment Status Updates */}
+                  {onUpdatePaymentStatus && (
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium">Trạng thái thanh toán</h4>
+                      <div className="flex items-center gap-2">
+                        <Select value={newPaymentStatus} onValueChange={(value) => setNewPaymentStatus(value as PaymentStatus)}>
+                          <SelectTrigger className="flex-1">
+                            <SelectValue placeholder="Chọn trạng thái thanh toán" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="PENDING">Chờ thanh toán</SelectItem>
+                            <SelectItem value="PAID">Đã thanh toán</SelectItem>
+                            <SelectItem value="FAILED">Thất bại</SelectItem>
+                            <SelectItem value="REFUNDED">Hoàn trả</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button 
+                          disabled={!newPaymentStatus || loading} 
+                          onClick={handleUpdatePaymentStatus}
+                          size="sm"
+                        >
+                          Cập nhật
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                  )}
+
+                  
+                  {onUpdateOrderStatus && (
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium">Trạng thái đơn hàng</h4>
+                      <div className="flex items-center gap-2">
+                        <Select value={newOrderStatus} onValueChange={(value) => setNewOrderStatus(value as OrderStatus)}>
+                          <SelectTrigger className="flex-1">
+                            <SelectValue placeholder="Chọn trạng thái đơn hàng" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="PENDING">Chờ xử lý</SelectItem>
+                            <SelectItem value="PROCESSING">Đang xử lý</SelectItem>
+                            <SelectItem value="SHIPPED">Đã giao hàng</SelectItem>
+                            <SelectItem value="DELIVERED">Đã giao hàng</SelectItem>
+                            <SelectItem value="CANCELLED">Đã hủy</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button 
+                          disabled={!newOrderStatus || loading} 
+                          onClick={handleUpdateOrderStatus}
+                          size="sm"
+                        >
+                          Cập nhật
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>}
           </div>
 
           {/* Right Column */}
@@ -267,7 +306,7 @@ export const OrderDialog = ({
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <User className="h-4 w-4" />
-                  Customer
+                  Khách hàng
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -285,7 +324,7 @@ export const OrderDialog = ({
                   <div className="flex items-start gap-2">
                     <Phone className="mt-0.5 h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="font-medium">Phone</p>
+                      <p className="font-medium">Số điện thoại</p>
                       <p className="text-sm">{order.phone}</p>
                     </div>
                   </div>
@@ -293,7 +332,7 @@ export const OrderDialog = ({
                   <div className="flex items-start gap-2">
                     <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="font-medium">Shipping Address</p>
+                      <p className="font-medium">Địa chỉ giao hàng</p>
                       <p className="text-sm">{order.address}</p>
                     </div>
                   </div>
@@ -306,7 +345,7 @@ export const OrderDialog = ({
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Clock className="h-4 w-4" />
-                  Order Timeline
+                  Lịch sử đơn hàng
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -319,7 +358,7 @@ export const OrderDialog = ({
                       <div className="h-full w-0.5 bg-gray-200"></div>
                     </div>
                     <div>
-                      <p className="text-sm font-medium">Order Created</p>
+                      <p className="text-sm font-medium">Đơn hàng được tạo</p>
                       <p className="text-xs text-gray-500">{formatDate(order.createdAt)}</p>
                     </div>
                   </div>
@@ -339,15 +378,42 @@ export const OrderDialog = ({
                       </div>
                       <div>
                         <p className="text-sm font-medium">
-                          {order.paymentStatus === 'PENDING' ? 'Payment Pending' :
-                          order.paymentStatus === 'PAID' ? 'Payment Completed' :
-                          order.paymentStatus === 'FAILED' ? 'Payment Failed' : 
-                          order.paymentStatus === 'REFUNDED' ? 'Payment Refunded' : 'Status Updated'}
+                          {order.paymentStatus === 'PENDING' ? 'Chờ thanh toán' :
+                          order.paymentStatus === 'PAID' ? 'Đã thanh toán' :
+                          order.paymentStatus === 'FAILED' ? 'Thất bại' : 
+                          order.paymentStatus === 'REFUNDED' ? 'Hoàn trả' : 'Trạng thái đã cập nhật'}
                         </p>
                         <p className="text-xs text-gray-500">{formatDate(order.updatedAt)}</p>
                       </div>
                     </div>
                   )}
+
+                  {/* Show order status in timeline */}
+                  <div className="flex gap-3">
+                    <div className="flex flex-col items-center">
+                      <div className={`flex h-6 w-6 items-center justify-center rounded-full text-white ${
+                        order.orderStatus === 'CANCELLED'
+                          ? 'bg-red-500'
+                          : order.orderStatus === 'DELIVERED'
+                            ? 'bg-green-500'
+                            : order.orderStatus === 'SHIPPED'
+                              ? 'bg-indigo-500'
+                              : 'bg-blue-500'
+                      }`}>
+                        <Package className="h-3 w-3" />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">
+                        {order.orderStatus === 'PENDING' ? 'Chờ xử lý' :
+                        order.orderStatus === 'PROCESSING' ? 'Đang xử lý' :
+                        order.orderStatus === 'SHIPPED' ? 'Đã giao hàng' :
+                        order.orderStatus === 'DELIVERED' ? 'Đã giao hàng' :
+                        order.orderStatus === 'CANCELLED' ? 'Đơn hàng đã hủy' : 'Trạng thái đơn hàng đã cập nhật'}
+                      </p>
+                      <p className="text-xs text-gray-500">{formatDate(order.updatedAt)}</p>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -356,7 +422,7 @@ export const OrderDialog = ({
         
         <DialogFooter className="mt-6">
           <Button variant="outline" onClick={onClose}>
-            Close
+            Đóng
           </Button>
         </DialogFooter>
       </DialogContent>
